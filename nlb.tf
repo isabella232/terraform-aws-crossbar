@@ -74,6 +74,7 @@ resource "aws_lb_target_group" "crossbarfx-nlb-target-group" {
 
 # https://www.terraform.io/docs/providers/aws/r/lb_listener.html
 resource "aws_lb_listener" "crossbarfx-nlb-listener" {
+    load_balancer_arn = "${aws_lb.crossbarfx-nlb.arn}"
     port              = "80"
     protocol          = "TCP"
     default_action {
