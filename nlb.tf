@@ -66,7 +66,7 @@ resource "aws_lb" "crossbarfx-nlb" {
 resource "aws_lb_target_group" "crossbarfx-nlb-target-group" {
     name     = "crossbarfx-nlb-target-group"
     port     = 80
-    protocol = "HTTP"
+    protocol = "TCP"
     vpc_id   = "${aws_vpc.crossbarfx_vpc.id}"
     tags = {
         Name = "crossbarfx-nlb-target-group"
@@ -77,7 +77,7 @@ resource "aws_lb_target_group" "crossbarfx-nlb-target-group" {
 resource "aws_lb_listener" "crossbarfx-nlb-listener" {
     load_balancer_arn = "${aws_lb.crossbarfx-nlb.arn}"
     port              = "80"
-    protocol          = "HTTP"
+    protocol          = "TCP"
     default_action {
         type             = "forward"
         target_group_arn = "${aws_lb_target_group.crossbarfx-nlb-target-group.arn}"
@@ -87,12 +87,12 @@ resource "aws_lb_listener" "crossbarfx-nlb-listener" {
 resource "aws_lb_listener" "crossbarfx-nlb-listener-tls" {
     load_balancer_arn = "${aws_lb.crossbarfx-nlb.arn}"
     port              = "443"
-    protocol          = "HTTPS"
+    protocol          = "TLS"
     ssl_policy        = "ELBSecurityPolicy-FS-1-2-Res-2019-08"
     certificate_arn   = "${aws_acm_certificate.crossbarfx_dns_cert.0.arn}"
     default_action {
         type             = "forward"
         target_group_arn = "${aws_lb_target_group.crossbarfx-nlb-target-group.arn}"
     }
-    count = "${var.ENABLE_TLS ? 1 : 0}"
+    count = var.ENABLE_TLS ? 1 : 0
 }

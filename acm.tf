@@ -7,7 +7,7 @@ resource "aws_acm_certificate" "crossbarfx_dns_cert" {
     ]
     validation_method = "DNS"
 
-    count = "${var.ENABLE_TLS ? 1 : 0}"
+    count = var.ENABLE_TLS ? 1 : 0
 }
 
 resource "aws_route53_record" "crossbarfx_dns_cert_validation_cn_rec" {
@@ -19,7 +19,7 @@ resource "aws_route53_record" "crossbarfx_dns_cert_validation_cn_rec" {
     ]
     ttl     = 60
 
-    count = "${var.ENABLE_TLS ? 1 : 0}"
+    count = var.ENABLE_TLS ? 1 : 0
 }
 
 resource "aws_route53_record" "crossbarfx_dns_cert_validation_alt1_rec" {
@@ -31,7 +31,7 @@ resource "aws_route53_record" "crossbarfx_dns_cert_validation_alt1_rec" {
     ]
     ttl     = 60
 
-    count = "${var.ENABLE_TLS ? 1 : 0}"
+    count = var.ENABLE_TLS ? 1 : 0
 }
 
 resource "aws_acm_certificate_validation" "crossbarfx_dns_cert_validation" {
@@ -41,5 +41,5 @@ resource "aws_acm_certificate_validation" "crossbarfx_dns_cert_validation" {
         aws_route53_record.crossbarfx_dns_cert_validation_alt1_rec.0.fqdn
     ]
 
-    count = "${var.ENABLE_TLS ? 1 : 0}"
+    count = var.ENABLE_TLS ? 1 : 0
 }
