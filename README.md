@@ -1,5 +1,21 @@
 # Terraform based setup of Crossbar.io FX
 
+
+module "crossbarfx" {
+    source  = "crossbario/crossbarfx/aws"
+    version = "1.0.0"
+    PRIVKEY=${HOME}/.ssh/id_rsa
+    PUBKEY=${HOME}/.ssh/id_rsa.pub
+    DOMAIN_NAME="tentil.es"
+    DOMAIN_ID="tentiles"
+}
+
+PRIVKEY=${HOME}/.ssh/id_rsa \
+PUBKEY=${HOME}/.ssh/id_rsa.pub \
+DOMAIN_NAME="idma2020.de" \
+DOMAIN_ID="idma2020de"
+
+
 ## Create your AWS zone
 
 In this example, we setup everything to have our new cluster host WAMP application routing, Web services and optionally XBR data market services for our domain

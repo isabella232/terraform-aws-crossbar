@@ -9,14 +9,13 @@ resource "aws_launch_configuration" "launchconfig1" {
     key_name        = aws_key_pair.keypair1.key_name
     security_groups = [aws_security_group.myinstance.id]
 
-    user_data       = templatefile("files/setup-edge.sh", {
+    user_data = templatefile("${path.module}/files/setup-edge.sh", {
             file_system_id = aws_efs_file_system.efs1.id,
             access_point_id_home = aws_efs_access_point.efs-home.id
             master_url = "ws://${aws_instance.master.private_ip}:9000/ws"
             master_hostname = aws_instance.master.private_ip
             master_port = 9000
-        }
-    )
+    })
 }
 
 # https://www.terraform.io/docs/providers/aws/r/autoscaling_group.html

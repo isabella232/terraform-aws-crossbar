@@ -16,11 +16,10 @@ resource "aws_instance" "master" {
         env = "prod"
     }
 
-    user_data = templatefile("files/setup-master.sh", {
+    user_data = templatefile("${path.module}/files/setup-master.sh", {
             file_system_id = aws_efs_file_system.efs1.id,
             access_point_id_home = aws_efs_access_point.efs-home.id
             access_point_id_master = aws_efs_access_point.efs-master.id
             master_port = 9000
-        }
-    )
+    })
 }
