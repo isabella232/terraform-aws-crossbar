@@ -67,6 +67,14 @@ resource "aws_lb_target_group" "crossbarfx-nlb-target-group" {
     name     = "crossbarfx-nlb-target-group"
     port     = 80
     protocol = "TCP"
+
+    # Error: Network Load Balancers do not support Stickiness
+    # https://github.com/terraform-providers/terraform-provider-aws/issues/9093
+    stickiness {
+        enabled = false
+        type = "lb_cookie"
+    }
+
     tags = {
         Name = "crossbarfx-nlb-target-group"
     }
@@ -74,24 +82,24 @@ resource "aws_lb_target_group" "crossbarfx-nlb-target-group" {
 
 # https://www.terraform.io/docs/providers/aws/r/lb_listener.html
 resource "aws_lb_listener" "crossbarfx-nlb-listener" {
-    load_balancer_arn = "${aws_lb.crossbarfx-nlb.arn}"
+    load_balancer_arn = aws_lb.crossbarfx-nlb.arn
     port              = "80"
     protocol          = "TCP"
     default_action {
         type             = "forward"
-        target_group_arn = "${aws_lb_target_group.crossbarfx-nlb-target-group.arn}"
+        target_group_arn = aws_lb_target_group.crossbarfx-nlb-target-group.arn
     }
 }
 
 resource "aws_lb_listener" "crossbarfx-nlb-listener-tls" {
-    load_balancer_arn = "${aws_lb.crossbarfx-nlb.arn}"
+    load_balancer_arn = aws_lb.crossbarfx-nlb.arn
     port              = "443"
     protocol          = "TLS"
     ssl_policy        = "ELBSecurityPolicy-FS-1-2-Res-2019-08"
     certificate_arn   = "${aws_acm_certificate.crossbarfx_dns_cert.0.arn}"
     default_action {
         type             = "forward"
-        target_group_arn = "${aws_lb_target_group.crossbarfx-nlb-target-group.arn}"
+        target_group_arn = aws_lb_target_group.crossbarfx-nlb-target-group.arn
     }
     count = var.ENABLE_TLS ? 1 : 0
 }
