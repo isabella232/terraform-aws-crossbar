@@ -5,7 +5,7 @@ provider "aws" {
     region = var.AWS_REGION
 }
 
-resource "aws_key_pair" "keypair1" {
-    key_name   = "keypair1"
+resource "aws_key_pair" "crossbarfx_keypair" {
+    key_name   = "crossbarfx_keypair"
     public_key = file(var.PUBKEY)
 }

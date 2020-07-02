@@ -5,9 +5,9 @@
 #
 
 # https://www.terraform.io/docs/providers/aws/r/autoscaling_policy.html
-resource "aws_autoscaling_policy" "example-cpu-policy" {
-    name                   = "example-cpu-policy"
-    autoscaling_group_name = aws_autoscaling_group.autoscaling1.name
+resource "aws_autoscaling_policy" "crossbarfx_cluster_cpu_policy" {
+    name                   = "crossbarfx_cluster_cpu_policy"
+    autoscaling_group_name = aws_autoscaling_group.crossbarfx_cluster_autoscaling.name
     adjustment_type        = "ChangeInCapacity"
     scaling_adjustment     = "1"
     cooldown               = "300"
@@ -15,9 +15,9 @@ resource "aws_autoscaling_policy" "example-cpu-policy" {
 }
 
 # https://www.terraform.io/docs/providers/aws/r/cloudwatch_metric_alarm.html
-resource "aws_cloudwatch_metric_alarm" "example-cpu-alarm" {
-    alarm_name          = "example-cpu-alarm"
-    alarm_description   = "example-cpu-alarm"
+resource "aws_cloudwatch_metric_alarm" "crossbarfx_cluster_cpu_alarm" {
+    alarm_name          = "crossbarfx_cluster_cpu-alarm"
+    alarm_description   = "crossbarfx_cluster_cpu-alarm"
     comparison_operator = "GreaterThanOrEqualToThreshold"
     evaluation_periods  = "2"
     metric_name         = "CPUUtilization"
@@ -27,11 +27,11 @@ resource "aws_cloudwatch_metric_alarm" "example-cpu-alarm" {
     threshold           = "60"
 
     dimensions = {
-        "AutoScalingGroupName" = aws_autoscaling_group.autoscaling1.name
+        "AutoScalingGroupName" = aws_autoscaling_group.crossbarfx_cluster_autoscaling.name
     }
 
     actions_enabled = true
-    alarm_actions   = [aws_autoscaling_policy.example-cpu-policy.arn]
+    alarm_actions   = [aws_autoscaling_policy.crossbarfx_cluster_cpu_policy.arn]
 }
 
 #
@@ -39,9 +39,9 @@ resource "aws_cloudwatch_metric_alarm" "example-cpu-alarm" {
 #
 
 # https://www.terraform.io/docs/providers/aws/r/autoscaling_policy.html
-resource "aws_autoscaling_policy" "example-cpu-policy-scaledown" {
-    name                   = "example-cpu-policy-scaledown"
-    autoscaling_group_name = aws_autoscaling_group.autoscaling1.name
+resource "aws_autoscaling_policy" "crossbarfx_cluster_cpu_policy_scaledown" {
+    name                   = "crossbarfx_cluster_cpu_olicy_scaledown"
+    autoscaling_group_name = aws_autoscaling_group.crossbarfx_cluster_autoscaling.name
     adjustment_type        = "ChangeInCapacity"
     scaling_adjustment     = "-1"
     cooldown               = "300"
@@ -49,9 +49,9 @@ resource "aws_autoscaling_policy" "example-cpu-policy-scaledown" {
 }
 
 # https://www.terraform.io/docs/providers/aws/r/cloudwatch_metric_alarm.html
-resource "aws_cloudwatch_metric_alarm" "example-cpu-alarm-scaledown" {
-    alarm_name          = "example-cpu-alarm-scaledown"
-    alarm_description   = "example-cpu-alarm-scaledown"
+resource "aws_cloudwatch_metric_alarm" "crossbarfx_cluster_cpu_alarm_scaledown" {
+    alarm_name          = "crossbarfx_cluster_cpu_alarm_scaledown"
+    alarm_description   = "crossbarfx_cluster_cpu_alarm_scaledown"
     comparison_operator = "LessThanOrEqualToThreshold"
     evaluation_periods  = "2"
     metric_name         = "CPUUtilization"
@@ -61,9 +61,9 @@ resource "aws_cloudwatch_metric_alarm" "example-cpu-alarm-scaledown" {
     threshold           = "10"
 
     dimensions = {
-        "AutoScalingGroupName" = aws_autoscaling_group.autoscaling1.name
+        "AutoScalingGroupName" = aws_autoscaling_group.crossbarfx_cluster_autoscaling.name
     }
 
     actions_enabled = true
-    alarm_actions   = [aws_autoscaling_policy.example-cpu-policy-scaledown.arn]
+    alarm_actions   = [aws_autoscaling_policy.crossbarfx_cluster_cpu_policy_scaledown.arn]
 }

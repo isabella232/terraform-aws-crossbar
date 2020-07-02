@@ -24,7 +24,7 @@ cd ..
 /usr/bin/docker pull crossbario/crossbarfx:pypy-slim-amd64
 
 mkdir -p /node
-echo "${file_system_id} /node efs _netdev,tls,accesspoint=${access_point_id_home} 0 0" >> /etc/fstab
+echo "${file_system_id} /node efs _netdev,tls,accesspoint=${access_point_id_nodes} 0 0" >> /etc/fstab
 mount -a /node
 
 mkdir -p /master
