@@ -1,0 +1,38 @@
+{
+    "variables": {
+    },
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "access_key": "{{user `aws_access_key`}}",
+            "secret_key": "{{user `aws_secret_key`}}",
+            "region": "eu-central-1",
+            "source_ami": "ami-0d359437d1756caa8",
+            "instance_type": "t3a.medium",
+            "ssh_username": "ubuntu",
+            "ami_name": "crossbarfx-ami-{{timestamp}}"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "sudo DEBIAN_FRONTEND='noninteractive' apt-get update",
+                "sudo DEBIAN_FRONTEND='noninteractive' apt-get -y dist-upgrade",
+                "sudo DEBIAN_FRONTEND='noninteractive' sudo apt -y install apt-transport-https",
+                "sudo DEBIAN_FRONTEND='noninteractive' sudo apt-add-repository universe",
+                "sudo DEBIAN_FRONTEND='noninteractive' sudo apt update",
+                "sudo DEBIAN_FRONTEND='noninteractive' apt-get -y install apt-utils git unzip htop glances wget curl rng-tools apt-transport-https unattended-upgrades apt-listchanges ca-certificates gnupg-agent software-properties-common python3-pip",
+                "sudo DEBIAN_FRONTEND='noninteractive' dpkg-reconfigure -plow unattended-upgrades",
+                "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
+                "sudo DEBIAN_FRONTEND='noninteractive' add-apt-repository 'deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable'",
+                "sudo DEBIAN_FRONTEND='noninteractive' apt-get update",
+                "sudo DEBIAN_FRONTEND='noninteractive' apt-get -y install docker-ce docker-ce-cli containerd.io",
+                "sudo DEBIAN_FRONTEND='noninteractive' apt autoremove",
+                "sudo pip3 install docker-compose cookiecutter",
+                "sudo usermod -aG docker $USER",
+                "sudo docker run --rm crossbario/crossbarfx:pypy-slim-amd64 version"
+            ]
+        }
+    ]
+}

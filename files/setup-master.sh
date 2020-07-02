@@ -1,0 +1,135 @@
+#!/bin/sh
+
+###############################################################################
+#
+# The MIT License (MIT)
+#
+# Copyright (c) Crossbar.io Technologies GmbH
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+###############################################################################
+
+
+apt-get update
+apt-get dist-upgrade -y
+apt-get install -y expect binutils
+apt-get autoremove -y
+
+cd /tmp
+curl https://download.crossbario.com/crossbarfx/linux-amd64/crossbarfx-latest -o crossbarfx
+chmod +x crossbarfx
+cp crossbarfx /usr/local/bin/crossbarfx
+
+sudo -u ubuntu CROSSBAR_FABRIC_URL="ws://localhost:${master_port}/ws" /usr/local/bin/crossbarfx shell auth --yes
+
+# https://docs.aws.amazon.com/efs/latest/ug/installing-other-distro.html
+git clone https://github.com/aws/efs-utils
+cd efs-utils/
+./build-deb.sh
+apt-get -y install ./build/amazon-efs-utils*deb
+cd ..
+
+/usr/bin/docker pull crossbario/crossbarfx:pypy-slim-amd64
+
+mkdir -p /node
+echo "${file_system_id} /node efs _netdev,tls,accesspoint=${access_point_id_home} 0 0" >> /etc/fstab
+mount -a /node
+
+mkdir -p /master
+echo "${file_system_id} /master efs _netdev,tls,accesspoint=${access_point_id_master} 0 0" >> /etc/fstab
+mount -a /master
+
+mkdir -p /master/.crossbar
+crossbarfx keys --cbdir=/master/.crossbar
+PUBKEY=`grep "public-key-ed25519:" /master/.crossbar/key.pub  | awk '{print $2}'`
+
+node_config="$(cat <<EOF
+{
+    "version": 2,
+    "workers": [
+        {
+            "transports": [
+                "COPY",
+                "COPY",
+                {
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": ${master_port},
+                        "backlog": 1024
+                    }
+                }
+            ]
+        },
+        "COPY"
+    ]
+}
+EOF
+)"
+echo "$node_config" > /master/.crossbar/config.json
+
+chown -R ubuntu:ubuntu /master
+chmod 700 /master
+
+service_unit="$(cat <<EOF
+[Unit]
+Description=Crossbar.io FX (Master)
+After=syslog.target network.target nss-lookup.target network-online.target docker.service
+Requires=network-online.target docker.service
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+StandardInput=null
+StandardOutput=journal
+StandardError=journal
+TimeoutStartSec=0
+Restart=always
+ExecStart=/usr/bin/unbuffer /usr/bin/docker run --rm --name crossbarfx --net=host -t \
+    --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
+    -v /master:/master:rw \
+    -v /home/ubuntu/.crossbarfx:/master/.crossbarfx:ro \
+    -v /node:/node:ro \
+    -e CROSSBAR_FABRIC_SUPERUSER=/master/.crossbarfx/default.pub \
+    crossbario/crossbarfx:pypy-slim-amd64 \
+    master start --cbdir=/master/.crossbar
+ExecReload=/usr/bin/docker restart %n
+ExecStop=/usr/bin/docker stop %n
+ExecStopPost=-/usr/bin/docker rm -f %n
+
+[Install]
+WantedBy=multi-user.target
+EOF
+)"
+echo "$service_unit" >> /etc/systemd/system/crossbarfx.service
+
+systemctl daemon-reload
+systemctl enable crossbarfx.service
+systemctl restart crossbarfx.service
+
+aliases="$(cat <<EOF
+alias crossbarfx_stop='sudo systemctl stop crossbarfx'
+alias crossbarfx_restart='sudo systemctl restart crossbarfx'
+alias crossbarfx_status='sudo systemctl status crossbarfx'
+alias crossbarfx_logsf='sudo journalctl -f -u crossbarfx'
+alias crossbarfx_logs='sudo journalctl -n200 -u crossbarfx'
+EOF
+)"
+echo "$aliases" >> /home/ubuntu/.bashrc
