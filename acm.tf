@@ -3,7 +3,7 @@
 resource "aws_acm_certificate" "crossbarfx_dns_cert" {
     domain_name       = var.DOMAIN_NAME
     subject_alternative_names = [
-        "www.${var.DOMAIN_ID}"
+        "www.${var.DOMAIN_NAME}"
     ]
     validation_method = "DNS"
 }
