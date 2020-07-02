@@ -30,9 +30,10 @@ resource "aws_autoscaling_group" "crossbarfx_cluster_autoscaling" {
         aws_subnet.crossbarfx_vpc_public2.id,
         aws_subnet.crossbarfx_vpc_public3.id
     ]
-    load_balancers            = [
-        aws_lb.crossbarfx-nlb.name
-    ]
+    # load_balancers            = [
+    #     aws_lb.crossbarfx-nlb.name
+    # ]
+    # target_group_arns = []
 
     min_size                  = 2
     max_size                  = 2

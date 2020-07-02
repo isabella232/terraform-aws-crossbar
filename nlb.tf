@@ -67,7 +67,6 @@ resource "aws_lb_target_group" "crossbarfx-nlb-target-group" {
     name     = "crossbarfx-nlb-target-group"
     port     = 80
     protocol = "TCP"
-    vpc_id   = "${aws_vpc.crossbarfx_vpc.id}"
     tags = {
         Name = "crossbarfx-nlb-target-group"
     }
