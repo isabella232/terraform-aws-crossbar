@@ -17,7 +17,7 @@ resource "aws_subnet" "vpc1-master" {
     vpc_id                  = aws_vpc.vpc1.id
     cidr_block              = "10.0.10.0/24"
     map_public_ip_on_launch = "true"
-    availability_zone       = "eu-central-1a"
+    availability_zone       = var.AWS_AZ[0]
 
     tags = {
         Name = "vpc1-master"
@@ -28,7 +28,7 @@ resource "aws_subnet" "vpc1-public-1" {
     vpc_id                  = aws_vpc.vpc1.id
     cidr_block              = "10.0.1.0/24"
     map_public_ip_on_launch = "true"
-    availability_zone       = "eu-central-1a"
+    availability_zone       = var.AWS_AZ[0]
 
     tags = {
         Name = "vpc1-public-1"
@@ -39,7 +39,7 @@ resource "aws_subnet" "vpc1-public-2" {
     vpc_id                  = aws_vpc.vpc1.id
     cidr_block              = "10.0.2.0/24"
     map_public_ip_on_launch = "true"
-    availability_zone       = "eu-central-1b"
+    availability_zone       = var.AWS_AZ[1]
 
     tags = {
         Name = "vpc1-public-2"
@@ -50,7 +50,7 @@ resource "aws_subnet" "vpc1-public-3" {
     vpc_id                  = aws_vpc.vpc1.id
     cidr_block              = "10.0.3.0/24"
     map_public_ip_on_launch = "true"
-    availability_zone       = "eu-central-1c"
+    availability_zone       = var.AWS_AZ[2]
 
     tags = {
         Name = "vpc1-public-3"
@@ -61,7 +61,7 @@ resource "aws_subnet" "vpc1-private-1" {
     vpc_id                  = aws_vpc.vpc1.id
     cidr_block              = "10.0.4.0/24"
     map_public_ip_on_launch = "false"
-    availability_zone       = "eu-central-1a"
+    availability_zone       = var.AWS_AZ[0]
 
     tags = {
         Name = "vpc1-private-1"
@@ -72,7 +72,7 @@ resource "aws_subnet" "vpc1-private-2" {
     vpc_id                  = aws_vpc.vpc1.id
     cidr_block              = "10.0.5.0/24"
     map_public_ip_on_launch = "false"
-    availability_zone       = "eu-central-1b"
+    availability_zone       = var.AWS_AZ[1]
 
     tags = {
         Name = "vpc1-private-2"
@@ -83,7 +83,7 @@ resource "aws_subnet" "vpc1-private-3" {
     vpc_id                  = aws_vpc.vpc1.id
     cidr_block              = "10.0.6.0/24"
     map_public_ip_on_launch = "false"
-    availability_zone       = "eu-central-1c"
+    availability_zone       = var.AWS_AZ[2]
 
     tags = {
         Name = "vpc1-private-3"

@@ -4,11 +4,19 @@ variable "AWS_REGION" {
     default = "eu-central-1"
 }
 
+variable "AWS_AZ" {
+    default = ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
+}
+
 variable "AMIS" {
     type = map(string)
     default = {
         eu-central-1 = "ami-06ca2353bcdf3ac29"
     }
+}
+
+variable "INSTANCE_TYPE" {
+    default = "t3a.medium"
 }
 
 variable "PUBKEY" {

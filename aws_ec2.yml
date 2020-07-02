@@ -2,11 +2,6 @@
 
 # https://docs.ansible.com/ansible/latest/plugins/inventory/aws_ec2.html
 
-# plugin: aws_ec2
-# regions:
-# filters:
-#     tag:node: edge
-
 plugin: aws_ec2
 regions:
   - eu-central-1
@@ -25,5 +20,10 @@ filters:
         - master
 
 compose:
-#  ansible_host: private_ip_address
   ansible_host: public_ip_address
+
+# plugin: aws_ec2
+# regions:
+# filters:
+#     tag:node: edge
+#  ansible_host: private_ip_address

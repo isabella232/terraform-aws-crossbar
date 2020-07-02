@@ -1,5 +1,50 @@
 # Terraform based setup of Crossbar.io FX
 
+## Create your AWS zone
+
+In this example, we setup everything to have our new cluster host WAMP application routing, Web services and optionally XBR data market services for our domain
+
+* **tentil.es**
+
+We start by opening the AWS Route 53 console, creating a new AWS **zone** to be
+used with our domain:
+
+![shot12](docs/shot12.png)
+
+A new zone with Zone ID **Z07225043POQ86QQZSHMF** was created here.
+
+![shot12b](docs/shot12b.png)
+
+Open the zone and click on the NS record that was created automatically:
+
+![shot13](docs/shot13.png)
+
+This record refers to the DNS nameservers that must be used for this zone.
+
+## Configure your DNS domain
+
+Next, at your DNS registrar, configure the AWS nameservers of your zone
+
+```
+ns-122.awsdns-15.com
+ns-926.awsdns-51.net
+ns-2043.awsdns-63.co.uk
+ns-1040.awsdns-02.org
+```
+
+that apply for your domain.
+
+![shot11](docs/shot11.png)
+
+After configuration, the new nameservers need to propagate the DNS system.
+
+Once that has happened (which may take several minutes to half an hour), resolving
+your domain should look like:
+
+```console
+```
+
+
 * [http://idma2020.de/](http://idma2020.de/)
 * [https://idma2020.de/](https://idma2020.de/)
 

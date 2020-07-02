@@ -3,7 +3,7 @@
 # https://www.terraform.io/docs/providers/aws/r/instance.html
 resource "aws_instance" "master" {
     ami = var.AMIS[var.AWS_REGION]
-    instance_type = "t3a.medium"
+    instance_type = var.INSTANCE_TYPE
 
     subnet_id = aws_subnet.vpc1-master.id
     vpc_security_group_ids = [aws_security_group.master.id]

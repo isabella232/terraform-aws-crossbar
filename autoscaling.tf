@@ -4,7 +4,7 @@
 resource "aws_launch_configuration" "launchconfig1" {
     name_prefix     = "launchconfig1"
     image_id        = var.AMIS[var.AWS_REGION]
-    instance_type   = "t3a.medium"
+    instance_type   = var.INSTANCE_TYPE
 
     key_name        = aws_key_pair.keypair1.key_name
     security_groups = [aws_security_group.myinstance.id]
