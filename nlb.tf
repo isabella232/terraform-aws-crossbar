@@ -64,9 +64,10 @@ resource "aws_lb" "crossbarfx-nlb" {
 
 # https://www.terraform.io/docs/providers/aws/r/lb_target_group.html
 resource "aws_lb_target_group" "crossbarfx-nlb-target-group" {
-    name     = "crossbarfx-nlb-target-group"
-    port     = 80
-    protocol = "TCP"
+    name        = "crossbarfx-nlb-target-group"
+    port        = 80
+    protocol    = "TCP"
+    vpc_id      = aws_vpc.crossbarfx_vpc.id
 
     # Error: Network Load Balancers do not support Stickiness
     # https://github.com/terraform-providers/terraform-provider-aws/issues/9093
