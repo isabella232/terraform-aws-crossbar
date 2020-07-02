@@ -26,8 +26,8 @@ resource "aws_route53_record" "crossbarfx_zonerec_www" {
     name    = var.DOMAIN_NAME
     type    = "A"
     alias {
-        name                   = aws_elb.crossbarfxelb.dns_name
-        zone_id                = aws_elb.crossbarfxelb.zone_id
+        name                   = aws_lb.crossbarfx-nlb.dns_name
+        zone_id                = aws_lb.crossbarfx-nlb.zone_id
         evaluate_target_health = true
     }
 }

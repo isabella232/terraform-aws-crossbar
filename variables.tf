@@ -34,3 +34,7 @@ variable "DOMAIN_ID" {
 variable "DOMAIN_NAME" {
     type = string
 }
+
+variable "ENABLE_TLS" {
+    default = false
+}

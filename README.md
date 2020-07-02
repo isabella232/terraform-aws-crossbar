@@ -1,6 +1,10 @@
 # Terraform based setup of Crossbar.io FX
 
 
+
+https://www.grailbox.com/2020/04/how-to-set-up-a-domain-in-amazon-route-53-with-terraform/
+https://www.azavea.com/blog/2018/07/16/provisioning-acm-certificates-on-aws-with-terraform/
+
 module "crossbarfx" {
     source  = "crossbario/crossbarfx/aws"
     version = "1.0.0"
