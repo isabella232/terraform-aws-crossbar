@@ -1,10 +1,12 @@
 # Copyright (c) Crossbar.io Technologies GmbH. Licensed under GPL 3.0.
 
 variable "AWS_REGION" {
+    type = string
     default = "eu-central-1"
 }
 
 variable "AWS_AZ" {
+    type = list(string)
     default = ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
 }
 
@@ -16,6 +18,7 @@ variable "AMIS" {
 }
 
 variable "INSTANCE_TYPE" {
+    type = string
     default = "t3a.medium"
 }
 
@@ -36,5 +39,6 @@ variable "DOMAIN_NAME" {
 }
 
 variable "ENABLE_TLS" {
+    type = string
     default = false
 }

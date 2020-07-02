@@ -51,9 +51,12 @@ resource "aws_lb" "crossbarfx-nlb" {
         aws_subnet.crossbarfx_vpc_public1.id,
         aws_subnet.crossbarfx_vpc_public2.id,
         aws_subnet.crossbarfx_vpc_public3.id]
-    security_groups = [
-        aws_security_group.crossbarfx_elb.id
-    ]
+
+    # FIXME: InvalidConfigurationRequest: Security groups are not supported for load balancers with type 'network'
+    # security_groups = [
+    #     aws_security_group.crossbarfx_elb.id
+    # ]
+
     tags = {
         Name = "crossbarfx-nlb"
     }

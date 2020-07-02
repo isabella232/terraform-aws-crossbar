@@ -49,7 +49,7 @@ resource "aws_subnet" "crossbarfx_vpc_efs2" {
     vpc_id                  = aws_vpc.crossbarfx_vpc.id
     cidr_block              = "10.0.12.0/24"
     map_public_ip_on_launch = "true"
-    availability_zone       = var.AWS_AZ[0]
+    availability_zone       = var.AWS_AZ[1]
 
     tags = {
         Name = "crossbarfx_vpc_efs2"
@@ -60,7 +60,7 @@ resource "aws_subnet" "crossbarfx_vpc_efs3" {
     vpc_id                  = aws_vpc.crossbarfx_vpc.id
     cidr_block              = "10.0.13.0/24"
     map_public_ip_on_launch = "true"
-    availability_zone       = var.AWS_AZ[0]
+    availability_zone       = var.AWS_AZ[2]
 
     tags = {
         Name = "crossbarfx_vpc_efs3"
