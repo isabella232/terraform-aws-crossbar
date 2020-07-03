@@ -454,6 +454,21 @@ eu-central-1: ami-06ca2353bcdf3ac29
 ![shot12](docs/shot12.png)
 ![shot13](docs/shot13.png)
 
+## Publish
+
+List tags of current releases:
+
+```console
+git tag -l
+```
+
+Use an incremented tag for new release:
+
+```console
+git add . && git commit -m "updates" && git push && \
+git tag -a v1.1.3 -m "tagged release" && git push --tags
+```
+
 ## References
 
 * https://earlruby.org/2019/01/creating-aws-efs-elastic-filesystems-with-terraform/

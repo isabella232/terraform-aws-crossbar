@@ -38,3 +38,18 @@ variable "ENABLE_TLS" {
     type = string
     default = false
 }
+
+variable "min_size" {
+    type = number
+    default = 1
+}
+
+variable "max_size" {
+    type = number
+    default = 30
+}
+
+variable "desired_capacity" {
+    type = number
+    default = 3
+}
