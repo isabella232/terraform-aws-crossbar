@@ -1,37 +1,19 @@
 # Terraform based setup of Crossbar.io FX
 
-DevOps is infrastructure as code
+This provides a Terraform module that can create clusters of Crossbar.io FX in AWS.
+The module will define all necessary resources based on the [Terraform Provider for AWS](https://terraform.io/docs/providers/aws/index.html).
 
-It’s always been HashiCorp’s position that the best way to provision infrastructure is to store your infrastructure as code (IaC) configuration files in a VCS repository and use Terraform to create resources based on them. This process typically has three steps:
+## Usage
 
-    Write infrastructure as code
-    Manage configuration files in VCS
-    Automate infrastructure provisioning
+The following will create and deploy a Crossbar.io FX based cluster in AWS with two edge nodes and one master node.
 
+First, create a new Terraform workspace and a file `main.tf`
 
-Linking your Terraform Cloud workspace to a VCS repository
-
-
-
-
-[Terraform Provider for AWS](https://terraform.io/docs/providers/aws/index.html)
-
+```console
 cd myenv1
 main.tf
+```
 
-terraform workspace myenv1
-terraform init
-
-terraform plan
-terraform apply
-
-
-
-
-The following will create and deploy a Crossbar.io FX based cluster in AWS
-with two edge nodes and one master node.
-
-Install Terraform. Then, create a new empty directory and a file `main.tf`
 with this contents:
 
 ```hcl
@@ -39,8 +21,7 @@ module "crossbarfx" {
     source  = "crossbario/crossbarfx/aws"
     version = "1.1.0"
 
-    # your AWS keypair
-    PRIVKEY = "~/.ssh/id_rsa"
+    # your SSH key
     PUBKEY = "~/.ssh/id_rsa.pub"
 
     # where to deploy to
@@ -54,28 +35,23 @@ module "crossbarfx" {
     DOMAIN_NAME = "tentil.es"
     DOMAIN_ID = "tentiles"
 
-    # setup TLS certificates and all that (note: this can only be activated once the domain nameservers do work)
+    # setup TLS certificates and all that (note: this can only be activated
+    # once the domain nameservers do work)
     ENABLE_TLS = false
 }
 ```
 
-Adjust `DOMAIN_NAME` and `DOMAIN_ID` (at least).
+> Adjust `DOMAIN_NAME` and `DOMAIN_ID` (at least) in above.
 
-Now run:
+Now initialize your workspace
 
 ```console
 terraform init
 ```
 
-and
+and plan and apply your deployment
 
 ```console
+terraform plan
 terraform apply
-```
-
-To remove everything from AWS again, run:
-
-
-```console
-terraform destroy
 ```

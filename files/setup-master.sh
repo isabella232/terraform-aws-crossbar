@@ -23,9 +23,9 @@ cd ..
 
 /usr/bin/docker pull crossbario/crossbarfx:pypy-slim-amd64
 
-mkdir -p /node
-echo "${file_system_id} /node efs _netdev,tls,accesspoint=${access_point_id_nodes} 0 0" >> /etc/fstab
-mount -a /node
+mkdir -p /nodes
+echo "${file_system_id} /nodes efs _netdev,tls,accesspoint=${access_point_id_nodes} 0 0" >> /etc/fstab
+mount -a /nodes
 
 mkdir -p /master
 echo "${file_system_id} /master efs _netdev,tls,accesspoint=${access_point_id_master} 0 0" >> /etc/fstab
@@ -81,13 +81,13 @@ ExecStart=/usr/bin/unbuffer /usr/bin/docker run --rm --name crossbarfx --net=hos
     --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
     -v /master:/master:rw \
     -v /home/ubuntu/.crossbarfx:/master/.crossbarfx:ro \
-    -v /node:/node:ro \
+    -v /nodes:/nodes:ro \
     -e CROSSBAR_FABRIC_SUPERUSER=/master/.crossbarfx/default.pub \
     crossbario/crossbarfx:pypy-slim-amd64 \
     master start --cbdir=/master/.crossbar
-ExecReload=/usr/bin/docker restart %n
-ExecStop=/usr/bin/docker stop %n
-ExecStopPost=-/usr/bin/docker rm -f %n
+ExecReload=/usr/bin/docker restart crossbarfx
+ExecStop=/usr/bin/docker stop crossbarfx
+ExecStopPost=-/usr/bin/docker rm -f crossbarfx
 
 [Install]
 WantedBy=multi-user.target
@@ -103,7 +103,7 @@ aliases="$(cat <<EOF
 alias crossbarfx_stop='sudo systemctl stop crossbarfx'
 alias crossbarfx_restart='sudo systemctl restart crossbarfx'
 alias crossbarfx_status='sudo systemctl status crossbarfx'
-alias crossbarfx_logsf='sudo journalctl -f -u crossbarfx'
+alias crossbarfx_logstail='sudo journalctl -f -u crossbarfx'
 alias crossbarfx_logs='sudo journalctl -n200 -u crossbarfx'
 EOF
 )"

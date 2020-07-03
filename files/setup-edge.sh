@@ -21,15 +21,15 @@ cd ..
 
 /usr/bin/docker pull crossbario/crossbarfx:pypy-slim-amd64
 
-mkdir -p /node
-echo "${file_system_id} /node efs _netdev,tls,accesspoint=${access_point_id_nodes} 0 0" >> /etc/fstab
-mount -a /node
+mkdir -p /nodes
+echo "${file_system_id} /nodes efs _netdev,tls,accesspoint=${access_point_id_nodes} 0 0" >> /etc/fstab
+mount -a /nodes
 
 mkdir -p /tmp/.crossbar
 crossbarfx keys --cbdir=/tmp/.crossbar
 PUBKEY=`grep "public-key-ed25519:" /tmp/.crossbar/key.pub  | awk '{print $2}'`
-mkdir /node/$PUBKEY
-mv /tmp/.crossbar /node/$PUBKEY/
+mkdir /nodes/$PUBKEY
+mv /tmp/.crossbar /nodes/$PUBKEY/
 
 echo "export CROSSBARFX_PUBKEY="$PUBKEY >> ~/.profile
 
@@ -159,10 +159,10 @@ node_config="$(cat <<EOF
 }
 EOF
 )"
-echo "$node_config" >> /node/$PUBKEY/.crossbar/config.json
+echo "$node_config" >> /nodes/$PUBKEY/.crossbar/config.json
 
-chown -R ubuntu:ubuntu /node/$PUBKEY
-chmod 700 /node/$PUBKEY
+chown -R ubuntu:ubuntu /nodes/$PUBKEY
+chmod 700 /nodes/$PUBKEY
 
 service_unit="$(cat <<EOF
 [Unit]
@@ -181,12 +181,12 @@ TimeoutStartSec=0
 Restart=always
 ExecStart=/usr/bin/unbuffer /usr/bin/docker run --rm --name crossbarfx --net=host -t \
     --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
-    -v /node/$PUBKEY:/node \
+    -v /nodes/$PUBKEY:/nodes/$PUBKEY:rw \
     crossbario/crossbarfx:pypy-slim-amd64 \
-    edge start --cbdir=/node/.crossbar
-ExecReload=/usr/bin/docker restart %n
-ExecStop=/usr/bin/docker stop %n
-ExecStopPost=-/usr/bin/docker rm -f %n
+    edge start --cbdir=/nodes/$PUBKEY/.crossbar
+ExecReload=/usr/bin/docker restart crossbarfx
+ExecStop=/usr/bin/docker stop crossbarfx
+ExecStopPost=-/usr/bin/docker rm -f crossbarfx
 
 [Install]
 WantedBy=multi-user.target
@@ -197,3 +197,13 @@ echo "$service_unit" >> /etc/systemd/system/crossbarfx.service
 systemctl daemon-reload
 systemctl enable crossbarfx.service
 systemctl restart crossbarfx.service
+
+aliases="$(cat <<EOF
+alias crossbarfx_stop='sudo systemctl stop crossbarfx'
+alias crossbarfx_restart='sudo systemctl restart crossbarfx'
+alias crossbarfx_status='sudo systemctl status crossbarfx'
+alias crossbarfx_logstail='sudo journalctl -f -u crossbarfx'
+alias crossbarfx_logs='sudo journalctl -n200 -u crossbarfx'
+EOF
+)"
+echo "$aliases" >> /home/ubuntu/.bashrc
