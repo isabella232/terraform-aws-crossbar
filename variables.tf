@@ -13,7 +13,7 @@ variable "AWS_AZ" {
 variable "AMIS" {
     type = map(string)
     default = {
-        eu-central-1 = "ami-06ca2353bcdf3ac29"
+        eu-central-1 = "ami-013f66030d941122b"
     }
 }
 
