@@ -26,10 +26,6 @@ variable "PUBKEY" {
     type = string
 }
 
-variable "PRIVKEY" {
-    type = string
-}
-
 variable "DOMAIN_ID" {
     type = string
 }

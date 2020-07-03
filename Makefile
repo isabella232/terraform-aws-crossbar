@@ -22,46 +22,36 @@ version:
 
 init:
 	terraform init \
-		-var PRIVKEY=${HOME}/.ssh/id_rsa \
 		-var PUBKEY=${HOME}/.ssh/id_rsa.pub \
-		-var DOMAIN_NAME="idma2020.de" \
-		-var DOMAIN_ID="idma2020de"
+		-var DOMAIN_NAME="example.com" \
+		-var DOMAIN_ID="examplecom"
 
 plan:
 	terraform plan \
-		-var PRIVKEY=${HOME}/.ssh/id_rsa \
 		-var PUBKEY=${HOME}/.ssh/id_rsa.pub \
-		-var DOMAIN_NAME="idma2020.de" \
-		-var DOMAIN_ID="idma2020de"
+		-var DOMAIN_NAME="example.com" \
+		-var DOMAIN_ID="examplecom"
 
 apply:
 	terraform apply \
-		-var PRIVKEY=${HOME}/.ssh/id_rsa \
 		-var PUBKEY=${HOME}/.ssh/id_rsa.pub \
-		-var DOMAIN_NAME="idma2020.de" \
-		-var DOMAIN_ID="idma2020de"
+		-var DOMAIN_NAME="example.com" \
+		-var DOMAIN_ID="examplecom"
 
 destroy:
 	terraform destroy \
-		-var PRIVKEY=${HOME}/.ssh/id_rsa \
 		-var PUBKEY=${HOME}/.ssh/id_rsa.pub \
-		-var DOMAIN_NAME="idma2020.de" \
-		-var DOMAIN_ID="idma2020de"
+		-var DOMAIN_NAME="example.com" \
+		-var DOMAIN_ID="examplecom"
 
 refresh:
 	terraform refresh \
-		-var PRIVKEY=${HOME}/.ssh/id_rsa \
 		-var PUBKEY=${HOME}/.ssh/id_rsa.pub \
-		-var DOMAIN_NAME="idma2020.de" \
-		-var DOMAIN_ID="idma2020de"
+		-var DOMAIN_NAME="example.com" \
+		-var DOMAIN_ID="examplecom"
 
 list_nodes:
 	ansible-inventory -i aws_ec2.yml --graph
 
 ping_nodes:
 	ansible all -i aws_ec2.yml -m ping --private-key=~/.ssh/id_rsa -u ubuntu
-
-# The current implementation of Terraform import can only import resources into the state.
-# It does not generate configuration. A future version of Terraform will also generate configuration.
-import:
-	terraform import aws_route53_zone.idma2020de Z2491LS7TIYD1L

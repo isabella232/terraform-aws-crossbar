@@ -1,5 +1,33 @@
 # Terraform based setup of Crossbar.io FX
 
+DevOps is infrastructure as code
+
+It’s always been HashiCorp’s position that the best way to provision infrastructure is to store your infrastructure as code (IaC) configuration files in a VCS repository and use Terraform to create resources based on them. This process typically has three steps:
+
+    Write infrastructure as code
+    Manage configuration files in VCS
+    Automate infrastructure provisioning
+
+
+Linking your Terraform Cloud workspace to a VCS repository
+
+
+
+
+[Terraform Provider for AWS](https://terraform.io/docs/providers/aws/index.html)
+
+cd myenv1
+main.tf
+
+terraform workspace myenv1
+terraform init
+
+terraform plan
+terraform apply
+
+
+
+
 The following will create and deploy a Crossbar.io FX based cluster in AWS
 with two edge nodes and one master node.
 
