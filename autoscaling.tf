@@ -35,8 +35,10 @@ resource "aws_autoscaling_group" "crossbarfx_cluster_autoscaling" {
     # ]
     # target_group_arns = []
 
-    min_size                  = 2
-    max_size                  = 2
+    min_size                  = var.min_size
+    max_size                  = var.max_size
+    desired_capacity          = var.desired_capacity
+
     health_check_grace_period = 300
     health_check_type         = "EC2"
 
