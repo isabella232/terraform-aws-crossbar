@@ -113,6 +113,11 @@ and deploy from there:
 
 ![shot15](docs/shot15.png)
 
+### Use the CLI together with Terraform Cloud
+
+To access and use the state stored remotely in your Terraform Cloud workspace,
+and the following to `main.tf`, adjusting for your **organization** and **workspace**:
+
 ```console
 terraform {
   backend "remote" {
@@ -125,6 +130,9 @@ terraform {
 }
 ```
 
+#### Login
+
+First, login to Terraform Cloud and create a CLI token:
 
 ```console
 oberstet@intel-nuci7:~/scm/crossbario/xbr-network-terraform$ terraform login
@@ -162,6 +170,10 @@ The new API token will be used for any future Terraform command that must make
 authenticated requests to app.terraform.io.
 ```
 
+#### Initialize
+
+Initialize the local CLI:
+
 ```console
 oberstet@intel-nuci7:~/scm/crossbario/xbr-network-terraform$ terraform init
 Initializing modules...
@@ -196,6 +208,10 @@ rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.
 ```
 
+#### Planning
+
+Here is planning initiated from the local CLI with diff against the remote
+state maintained in Terraform Cloud:
 
 ```console
 oberstet@intel-nuci7:~/scm/crossbario/xbr-network-terraform$ terraform plan
@@ -269,7 +285,18 @@ actions need to be performed.
 oberstet@intel-nuci7:~/scm/crossbario/xbr-network-terraform$
 ```
 
-### Configure your cluster
+**Applying changes using the local CLI is not possible though:**
+
+```console
+oberstet@intel-nuci7:~/scm/crossbario/xbr-network-terraform$ terraform apply
+
+Error: Apply not allowed for workspaces with a VCS connection
+
+A workspace that is connected to a VCS requires the VCS-driven workflow to
+ensure that the VCS remains the single source of truth.
+```
+
+## Configure your cluster
 
 After you deployed your cluster, three nodes will be running
 
@@ -313,7 +340,7 @@ crossbarfx shell --realm mrealm1 show node1
 ```
 
 
-### Configuring DNS
+## Configuring DNS
 
 In this example, we setup everything to have our new cluster host WAMP application routing, Web services and optionally XBR data market services for our domain
 
@@ -333,8 +360,6 @@ Open the zone and click on the NS record that was created automatically:
 ![shot13](docs/shot13.png)
 
 This record refers to the DNS nameservers that must be used for this zone.
-
-## Configure your DNS domain
 
 Next, at your DNS registrar, configure the AWS nameservers of your zone
 
@@ -361,6 +386,11 @@ your domain should look like:
 * [http://idma2020.de/](http://idma2020.de/)
 * [https://idma2020.de/](https://idma2020.de/)
 
+## Shared Filesystems
+
+![shot21](docs/shot21.png)
+![shot20](docs/shot20.png)
+![shot19](docs/shot19.png)
 
 ## Packer
 
@@ -436,7 +466,6 @@ eu-central-1: ami-06ca2353bcdf3ac29
 
 (cpy382_1) oberstet@intel-nuci7:~/scm/crossbario/crossbario-devops/terraform$
 ```
-
 
 ## Screenshots
 
