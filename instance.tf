@@ -4,6 +4,7 @@
 resource "aws_instance" "crossbarfx_node_master" {
     ami = var.AMIS[var.AWS_REGION]
     instance_type = var.INSTANCE_TYPE
+    # master_url = "ws://${self.private_ip}:9000/ws"
 
     subnet_id = aws_subnet.crossbarfx_vpc_master.id
     vpc_security_group_ids = [
@@ -23,5 +24,6 @@ resource "aws_instance" "crossbarfx_node_master" {
             access_point_id_master = aws_efs_access_point.crossbarfx_efs_master.id
             access_point_id_nodes = aws_efs_access_point.crossbarfx_efs_nodes.id
             master_port = 9000
+            master_url = "ws://crossbarfx-master.local:9000/ws"
     })
 }

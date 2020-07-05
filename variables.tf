@@ -13,7 +13,11 @@ variable "AWS_AZ" {
 variable "AMIS" {
     type = map(string)
     default = {
-        eu-central-1 = "ami-013f66030d941122b"
+        # crossbario/crossbarfx:pypy-slim-amd64-20.6.2
+        # eu-central-1 = "ami-013f66030d941122b"
+
+        # crossbario/crossbarfx:pypy-slim-amd64-20.7.1.dev1
+        eu-central-1 = "ami-05728191a1fb6dc24"
     }
 }
 

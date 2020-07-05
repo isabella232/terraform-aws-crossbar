@@ -130,6 +130,15 @@ terraform {
 }
 ```
 
+### Destroy a cluster from Terraform Cloud
+
+![shot23](docs/shot23.png)
+
+![shot22](docs/shot22.png)
+
+![shot24](docs/shot24.png)
+
+
 #### Login
 
 First, login to Terraform Cloud and create a CLI token:

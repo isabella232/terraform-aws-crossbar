@@ -62,6 +62,10 @@ echo "$node_config" > /master/.crossbar/config.json
 chown -R ubuntu:ubuntu /master
 chmod 700 /master
 
+# CROSSBAR_FABRIC_SUPERUSER=/home/oberstet/.crossbarfx/default.pub
+# CROSSBAR_FABRIC_URL=ws://localhost:9000/ws
+# CROSSBARFX_WATCH_TO_PAIR=/tmp/nodes
+
 service_unit="$(cat <<EOF
 [Unit]
 Description=Crossbar.io FX (Master)
@@ -82,6 +86,8 @@ ExecStart=/usr/bin/unbuffer /usr/bin/docker run --rm --name crossbarfx --net=hos
     -v /master:/master:rw \
     -v /home/ubuntu/.crossbarfx:/master/.crossbarfx:ro \
     -v /nodes:/nodes:ro \
+    -e CROSSBAR_FABRIC_URL=${master_url} \
+    -e CROSSBARFX_WATCH_TO_PAIR=/nodes \
     -e CROSSBAR_FABRIC_SUPERUSER=/master/.crossbarfx/default.pub \
     crossbario/crossbarfx:pypy-slim-amd64 \
     master start --cbdir=/master/.crossbar
