@@ -62,10 +62,6 @@ echo "$node_config" > /master/.crossbar/config.json
 chown -R ubuntu:ubuntu /master
 chmod 700 /master
 
-# CROSSBAR_FABRIC_SUPERUSER=/home/oberstet/.crossbarfx/default.pub
-# CROSSBAR_FABRIC_URL=ws://localhost:9000/ws
-# CROSSBARFX_WATCH_TO_PAIR=/tmp/nodes
-
 service_unit="$(cat <<EOF
 [Unit]
 Description=Crossbar.io FX (Master)
@@ -83,12 +79,12 @@ TimeoutStartSec=0
 Restart=always
 ExecStart=/usr/bin/unbuffer /usr/bin/docker run --rm --name crossbarfx --net=host -t \
     --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
+    -v /nodes:/nodes:ro \
     -v /master:/master:rw \
     -v /home/ubuntu/.crossbarfx:/master/.crossbarfx:ro \
-    -v /nodes:/nodes:ro \
+    -e CROSSBAR_FABRIC_SUPERUSER=/master/.crossbarfx/default.pub \
     -e CROSSBAR_FABRIC_URL=${master_url} \
     -e CROSSBARFX_WATCH_TO_PAIR=/nodes \
-    -e CROSSBAR_FABRIC_SUPERUSER=/master/.crossbarfx/default.pub \
     crossbario/crossbarfx:pypy-slim-amd64 \
     master start --cbdir=/master/.crossbar
 ExecReload=/usr/bin/docker restart crossbarfx
@@ -106,6 +102,7 @@ systemctl enable crossbarfx.service
 systemctl restart crossbarfx.service
 
 aliases="$(cat <<EOF
+alias crossbarfx_start='sudo systemctl start crossbarfx'
 alias crossbarfx_stop='sudo systemctl stop crossbarfx'
 alias crossbarfx_restart='sudo systemctl restart crossbarfx'
 alias crossbarfx_status='sudo systemctl status crossbarfx'

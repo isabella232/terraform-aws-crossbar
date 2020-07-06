@@ -200,6 +200,7 @@ systemctl enable crossbarfx.service
 systemctl restart crossbarfx.service
 
 aliases="$(cat <<EOF
+alias crossbarfx_start='sudo systemctl start crossbarfx'
 alias crossbarfx_stop='sudo systemctl stop crossbarfx'
 alias crossbarfx_restart='sudo systemctl restart crossbarfx'
 alias crossbarfx_status='sudo systemctl status crossbarfx'
