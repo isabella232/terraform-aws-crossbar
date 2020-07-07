@@ -22,16 +22,18 @@ cd ..
 /usr/bin/docker pull crossbario/crossbarfx:pypy-slim-amd64
 
 mkdir -p /nodes
-echo "${file_system_id} /nodes efs _netdev,tls,accesspoint=${access_point_id_nodes} 0 0" >> /etc/fstab
+echo "${file_system_id} /nodes efs _netdev,tls,accesspoint=${access_point_id_nodes},rw,auto 0 0" >> /etc/fstab
 mount -a /nodes
 
 mkdir -p /tmp/.crossbar
 crossbarfx keys --cbdir=/tmp/.crossbar
 PUBKEY=`grep "public-key-ed25519:" /tmp/.crossbar/key.pub  | awk '{print $2}'`
-mkdir /nodes/$PUBKEY
-mv /tmp/.crossbar /nodes/$PUBKEY/
+HOSTNAME=`hostname`
+mkdir /nodes/$HOSTNAME
+mv /tmp/.crossbar /nodes/$HOSTNAME/
 
 echo "export CROSSBARFX_PUBKEY="$PUBKEY >> ~/.profile
+echo "export CROSSBARFX_HOSTNAME="$HOSTNAME >> ~/.profile
 
 node_config="$(cat <<EOF
 {
@@ -159,11 +161,10 @@ node_config="$(cat <<EOF
 }
 EOF
 )"
-echo "$node_config" >> /nodes/$PUBKEY/.crossbar/config.json
+echo "$node_config" >> /nodes/$HOSTNAME/.crossbar/config.json
 
-chown -R ubuntu:ubuntu /nodes/$PUBKEY
-chmod 700 /nodes/$PUBKEY
-ln -s /nodes/$PUBKEY /node
+chown -R ubuntu:ubuntu /nodes/$HOSTNAME
+chmod 700 /nodes/$HOSTNAME
 
 service_unit="$(cat <<EOF
 [Unit]
@@ -182,9 +183,9 @@ TimeoutStartSec=0
 Restart=always
 ExecStart=/usr/bin/unbuffer /usr/bin/docker run --rm --name crossbarfx --net=host -t \
     --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
-    -v /node:/node:rw \
+    -v /nodes/${HOSTNAME}:/nodes/${HOSTNAME}:rw \
     crossbario/crossbarfx:pypy-slim-amd64 \
-    edge start --cbdir=/node/.crossbar
+    edge start --cbdir=/nodes/${HOSTNAME}/.crossbar
 ExecReload=/usr/bin/docker restart crossbarfx
 ExecStop=/usr/bin/docker stop crossbarfx
 ExecStopPost=-/usr/bin/docker rm -f crossbarfx
