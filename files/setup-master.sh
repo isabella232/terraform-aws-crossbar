@@ -79,7 +79,7 @@ TimeoutStartSec=0
 Restart=always
 ExecStart=/usr/bin/unbuffer /usr/bin/docker run --rm --name crossbarfx --net=host -t \
     --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
-    -v /nodes:/nodes:ro \
+    -v /nodes:/nodes:rw \
     -v /master:/master:rw \
     -v /home/ubuntu/.crossbarfx:/master/.crossbarfx:ro \
     -e CROSSBAR_FABRIC_SUPERUSER=/master/.crossbarfx/default.pub \

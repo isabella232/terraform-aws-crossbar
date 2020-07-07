@@ -31,7 +31,7 @@
                 "sudo DEBIAN_FRONTEND='noninteractive' apt autoremove",
                 "sudo pip3 install docker-compose cookiecutter",
                 "sudo usermod -aG docker $USER",
-                "sudo docker pull crossbario/crossbarfx:pypy-slim-amd64-20.7.1.dev4",
+                "sudo docker pull crossbario/crossbarfx:pypy-slim-amd64-20.7.1.dev6",
                 "sudo docker run --rm crossbario/crossbarfx:pypy-slim-amd64 version"
             ]
         }
