@@ -183,9 +183,9 @@ TimeoutStartSec=0
 Restart=always
 ExecStart=/usr/bin/unbuffer /usr/bin/docker run --rm --name crossbarfx --net=host -t \
     --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
-    -v /nodes/${HOSTNAME}:/nodes/${HOSTNAME}:rw \
+    -v /nodes/$HOSTNAME:/nodes/$HOSTNAME:rw \
     crossbario/crossbarfx:pypy-slim-amd64 \
-    edge start --cbdir=/nodes/${HOSTNAME}/.crossbar
+    edge start --cbdir=/nodes/$HOSTNAME/.crossbar
 ExecReload=/usr/bin/docker restart crossbarfx
 ExecStop=/usr/bin/docker stop crossbarfx
 ExecStopPost=-/usr/bin/docker rm -f crossbarfx
