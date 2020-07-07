@@ -23,7 +23,10 @@ variable "AMIS" {
         # eu-central-1 = "ami-00070076551cc2056"
 
         # crossbario/crossbarfx:pypy-slim-amd64-20.7.1.dev3
-        eu-central-1 = "ami-00904fe8f9e0f566b"
+        # eu-central-1 = "ami-00904fe8f9e0f566b"
+
+        # crossbario/crossbarfx:pypy-slim-amd64-20.7.1.dev4
+        eu-central-1 = "ami-0ebf3711bc8558150"
     }
 }
 
