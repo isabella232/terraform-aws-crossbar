@@ -10,3 +10,10 @@
 ## 3 - Restart edge node
 
 ![autoconfiguration-shot8](docs/autoconfiguration/shot8.png)
+
+## Complete auto-configuration using Terraform
+
+![autoconfiguration-shot9](docs/autoconfiguration/shot9.png)
+![autoconfiguration-shot10](docs/autoconfiguration/shot10.png)
+![autoconfiguration-shot11](docs/autoconfiguration/shot11.png)
+![autoconfiguration-shot12](docs/autoconfiguration/shot12.png)
