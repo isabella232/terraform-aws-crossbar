@@ -7,6 +7,8 @@ apt-get dist-upgrade -y
 apt-get install -y expect binutils
 apt-get autoremove -y
 
+PRIVATE_IP=`curl http://169.254.169.254/latest/meta-data/local-ipv4`
+
 cd /tmp
 curl https://download.crossbario.com/crossbarfx/linux-amd64/crossbarfx-latest -o crossbarfx
 chmod +x crossbarfx
@@ -83,7 +85,7 @@ ExecStart=/usr/bin/unbuffer /usr/bin/docker run --rm --name crossbarfx --net=hos
     -v /master:/master:rw \
     -v /home/ubuntu/.crossbarfx:/master/.crossbarfx:ro \
     -e CROSSBAR_FABRIC_SUPERUSER=/master/.crossbarfx/default.pub \
-    -e CROSSBAR_FABRIC_URL=${master_url} \
+    -e CROSSBAR_FABRIC_URL=ws://$PRIVATE_IP:${master_port}/ws \
     -e CROSSBARFX_WATCH_TO_PAIR=/nodes \
     crossbario/crossbarfx:pypy-slim-amd64 \
     master start --cbdir=/master/.crossbar

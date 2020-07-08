@@ -53,5 +53,11 @@ refresh:
 list_nodes:
 	ansible-inventory -i aws_ec2.yml --graph
 
+list_scaling_group_nodes:
+	aws autoscaling describe-auto-scaling-instances --region eu-central-1 --output text \
+	--query "AutoScalingInstances[?AutoScalingGroupName=='crossbarfx_cluster_autoscaling'].InstanceId" \
+	| xargs -n1 aws ec2 describe-instances --instance-ids ${ID} --region eu-central-1 \
+	--query "Reservations[].Instances[].PrivateIpAddress" --output text
+
 ping_nodes:
 	ansible all -i aws_ec2.yml -m ping --private-key=~/.ssh/id_rsa -u ubuntu

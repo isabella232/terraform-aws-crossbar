@@ -1,7 +1,9 @@
 # Copyright (c) Crossbar.io Technologies GmbH. Licensed under GPL 3.0.
 
-# crossbarfx_vpc_efs
 # crossbarfx_vpc_master
+# crossbarfx_vpc_efs1
+# crossbarfx_vpc_efs2
+# crossbarfx_vpc_efs3
 # crossbarfx_vpc_public1
 # crossbarfx_vpc_public2
 # crossbarfx_vpc_public3
@@ -24,10 +26,11 @@ resource "aws_vpc" "crossbarfx_vpc" {
 # https://www.terraform.io/docs/providers/aws/r/subnet.html
 
 resource "aws_subnet" "crossbarfx_vpc_master" {
-    vpc_id                  = aws_vpc.crossbarfx_vpc.id
-    cidr_block              = "10.0.10.0/24"
-    map_public_ip_on_launch = "true"
-    availability_zone       = var.AWS_AZ[0]
+    vpc_id                              = aws_vpc.crossbarfx_vpc.id
+    cidr_block                          = "10.0.10.0/24"
+    map_public_ip_on_launch             = "true"
+    assign_ipv6_address_on_creation     = "true"
+    availability_zone                   = var.AWS_AZ[0]
 
     tags = {
         Name = "crossbarfx_vpc_master"
@@ -68,10 +71,11 @@ resource "aws_subnet" "crossbarfx_vpc_efs3" {
 }
 
 resource "aws_subnet" "crossbarfx_vpc_public1" {
-    vpc_id                  = aws_vpc.crossbarfx_vpc.id
-    cidr_block              = "10.0.1.0/24"
-    map_public_ip_on_launch = "true"
-    availability_zone       = var.AWS_AZ[0]
+    vpc_id                              = aws_vpc.crossbarfx_vpc.id
+    cidr_block                          = "10.0.1.0/24"
+    map_public_ip_on_launch             = "true"
+    assign_ipv6_address_on_creation     = "true"
+    availability_zone                   = var.AWS_AZ[0]
 
     tags = {
         Name = "crossbarfx_vpc_public1"
@@ -79,10 +83,11 @@ resource "aws_subnet" "crossbarfx_vpc_public1" {
 }
 
 resource "aws_subnet" "crossbarfx_vpc_public2" {
-    vpc_id                  = aws_vpc.crossbarfx_vpc.id
-    cidr_block              = "10.0.2.0/24"
-    map_public_ip_on_launch = "true"
-    availability_zone       = var.AWS_AZ[1]
+    vpc_id                              = aws_vpc.crossbarfx_vpc.id
+    cidr_block                          = "10.0.2.0/24"
+    map_public_ip_on_launch             = "true"
+    assign_ipv6_address_on_creation     = "true"
+    availability_zone                   = var.AWS_AZ[1]
 
     tags = {
         Name = "crossbarfx_vpc_public2"
@@ -90,10 +95,11 @@ resource "aws_subnet" "crossbarfx_vpc_public2" {
 }
 
 resource "aws_subnet" "crossbarfx_vpc_public3" {
-    vpc_id                  = aws_vpc.crossbarfx_vpc.id
-    cidr_block              = "10.0.3.0/24"
-    map_public_ip_on_launch = "true"
-    availability_zone       = var.AWS_AZ[2]
+    vpc_id                              = aws_vpc.crossbarfx_vpc.id
+    cidr_block                          = "10.0.3.0/24"
+    map_public_ip_on_launch             = "true"
+    assign_ipv6_address_on_creation     = "true"
+    availability_zone                   = var.AWS_AZ[2]
 
     tags = {
         Name = "crossbarfx_vpc_public3"
@@ -143,7 +149,7 @@ resource "aws_internet_gateway" "crossbarfx_vpc_gw" {
 }
 
 # https://www.terraform.io/docs/providers/aws/r/route_table.html
-resource "aws_route_table" "crossbarfx_vpc_public" {
+resource "aws_route_table" "crossbarfx_vpc_rtb" {
     vpc_id = aws_vpc.crossbarfx_vpc.id
     route {
         cidr_block = "0.0.0.0/0"
@@ -151,28 +157,58 @@ resource "aws_route_table" "crossbarfx_vpc_public" {
     }
 
     tags = {
-        Name = "crossbarfx_vpc_public"
+        Name = "crossbarfx_vpc_rtb"
     }
 }
 
-# route associations public
-resource "aws_route_table_association" "crossbarfx_vpc_master" {
-    subnet_id      = aws_subnet.crossbarfx_vpc_master.id
-    route_table_id = aws_route_table.crossbarfx_vpc_public.id
-}
 
 # https://www.terraform.io/docs/providers/aws/r/route_table_association.html
+resource "aws_route_table_association" "crossbarfx_vpc_master" {
+    subnet_id      = aws_subnet.crossbarfx_vpc_master.id
+    route_table_id = aws_route_table.crossbarfx_vpc_rtb.id
+}
+
 resource "aws_route_table_association" "crossbarfx_vpc-public-1-a" {
     subnet_id      = aws_subnet.crossbarfx_vpc_public1.id
-    route_table_id = aws_route_table.crossbarfx_vpc_public.id
+    route_table_id = aws_route_table.crossbarfx_vpc_rtb.id
 }
 
 resource "aws_route_table_association" "crossbarfx_vpc-public-2-a" {
     subnet_id      = aws_subnet.crossbarfx_vpc_public2.id
-    route_table_id = aws_route_table.crossbarfx_vpc_public.id
+    route_table_id = aws_route_table.crossbarfx_vpc_rtb.id
 }
 
 resource "aws_route_table_association" "crossbarfx_vpc-public-3-a" {
     subnet_id      = aws_subnet.crossbarfx_vpc_public3.id
-    route_table_id = aws_route_table.crossbarfx_vpc_public.id
+    route_table_id = aws_route_table.crossbarfx_vpc_rtb.id
+}
+
+resource "aws_route_table_association" "crossbarfx_vpc-router-1-a" {
+    subnet_id      = aws_subnet.crossbarfx_vpc_router1.id
+    route_table_id = aws_route_table.crossbarfx_vpc_rtb.id
+}
+
+resource "aws_route_table_association" "crossbarfx_vpc-router-2-a" {
+    subnet_id      = aws_subnet.crossbarfx_vpc_router2.id
+    route_table_id = aws_route_table.crossbarfx_vpc_rtb.id
+}
+
+resource "aws_route_table_association" "crossbarfx_vpc-router-3-a" {
+    subnet_id      = aws_subnet.crossbarfx_vpc_router3.id
+    route_table_id = aws_route_table.crossbarfx_vpc_rtb.id
+}
+
+resource "aws_route_table_association" "crossbarfx_vpc-efs-1-a" {
+    subnet_id      = aws_subnet.crossbarfx_vpc_efs1.id
+    route_table_id = aws_route_table.crossbarfx_vpc_rtb.id
+}
+
+resource "aws_route_table_association" "crossbarfx_vpc-efs-2-a" {
+    subnet_id      = aws_subnet.crossbarfx_vpc_efs2.id
+    route_table_id = aws_route_table.crossbarfx_vpc_rtb.id
+}
+
+resource "aws_route_table_association" "crossbarfx_vpc-efs-3-a" {
+    subnet_id      = aws_subnet.crossbarfx_vpc_efs3.id
+    route_table_id = aws_route_table.crossbarfx_vpc_rtb.id
 }

@@ -24,6 +24,15 @@ resource "aws_instance" "crossbarfx_node_master" {
             access_point_id_master = aws_efs_access_point.crossbarfx_efs_master.id
             access_point_id_nodes = aws_efs_access_point.crossbarfx_efs_nodes.id
             master_port = 9000
-            master_url = "ws://crossbarfx-master.local:9000/ws"
     })
+}
+
+resource "aws_network_interface" "crossbarfx_node_master_nic1" {
+    subnet_id       = aws_subnet.crossbarfx_vpc_master.id
+    private_ips     = ["10.0.10.10"]
+    security_groups = ["${aws_security_group.crossbarfx_master_node.id}"]
+    attachment {
+        instance  = aws_instance.crossbarfx_node_master.id
+        device_index = 1
+    }
 }
