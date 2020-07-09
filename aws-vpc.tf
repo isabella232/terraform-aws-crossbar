@@ -29,7 +29,7 @@ resource "aws_subnet" "crossbarfx_vpc_master" {
     vpc_id                              = aws_vpc.crossbarfx_vpc.id
     cidr_block                          = "10.0.10.0/24"
     map_public_ip_on_launch             = "true"
-    availability_zone                   = var.AWS_AZ[0]
+    availability_zone                   = var.aws-azs[var.aws-region][0]
 
     tags = {
         Name = "crossbarfx_vpc_master"
@@ -40,7 +40,7 @@ resource "aws_subnet" "crossbarfx_vpc_efs1" {
     vpc_id                  = aws_vpc.crossbarfx_vpc.id
     cidr_block              = "10.0.11.0/24"
     map_public_ip_on_launch = "true"
-    availability_zone       = var.AWS_AZ[0]
+    availability_zone       = var.aws-azs[var.aws-region][0]
 
     tags = {
         Name = "crossbarfx_vpc_efs1"
@@ -51,7 +51,7 @@ resource "aws_subnet" "crossbarfx_vpc_efs2" {
     vpc_id                  = aws_vpc.crossbarfx_vpc.id
     cidr_block              = "10.0.12.0/24"
     map_public_ip_on_launch = "true"
-    availability_zone       = var.AWS_AZ[1]
+    availability_zone       = var.aws-azs[var.aws-region][1]
 
     tags = {
         Name = "crossbarfx_vpc_efs2"
@@ -62,7 +62,7 @@ resource "aws_subnet" "crossbarfx_vpc_efs3" {
     vpc_id                  = aws_vpc.crossbarfx_vpc.id
     cidr_block              = "10.0.13.0/24"
     map_public_ip_on_launch = "true"
-    availability_zone       = var.AWS_AZ[2]
+    availability_zone       = var.aws-azs[var.aws-region][2]
 
     tags = {
         Name = "crossbarfx_vpc_efs3"
@@ -73,7 +73,7 @@ resource "aws_subnet" "crossbarfx_vpc_public1" {
     vpc_id                              = aws_vpc.crossbarfx_vpc.id
     cidr_block                          = "10.0.1.0/24"
     map_public_ip_on_launch             = "true"
-    availability_zone                   = var.AWS_AZ[0]
+    availability_zone                   = var.aws-azs[var.aws-region][0]
 
     tags = {
         Name = "crossbarfx_vpc_public1"
@@ -84,7 +84,7 @@ resource "aws_subnet" "crossbarfx_vpc_public2" {
     vpc_id                              = aws_vpc.crossbarfx_vpc.id
     cidr_block                          = "10.0.2.0/24"
     map_public_ip_on_launch             = "true"
-    availability_zone                   = var.AWS_AZ[1]
+    availability_zone                   = var.aws-azs[var.aws-region][1]
 
     tags = {
         Name = "crossbarfx_vpc_public2"
@@ -95,7 +95,7 @@ resource "aws_subnet" "crossbarfx_vpc_public3" {
     vpc_id                              = aws_vpc.crossbarfx_vpc.id
     cidr_block                          = "10.0.3.0/24"
     map_public_ip_on_launch             = "true"
-    availability_zone                   = var.AWS_AZ[2]
+    availability_zone                   = var.aws-azs[var.aws-region][2]
 
     tags = {
         Name = "crossbarfx_vpc_public3"
@@ -106,7 +106,7 @@ resource "aws_subnet" "crossbarfx_vpc_router1" {
     vpc_id                  = aws_vpc.crossbarfx_vpc.id
     cidr_block              = "10.0.4.0/24"
     map_public_ip_on_launch = "false"
-    availability_zone       = var.AWS_AZ[0]
+    availability_zone       = var.aws-azs[var.aws-region][0]
 
     tags = {
         Name = "crossbarfx_vpc_router1"
@@ -117,7 +117,7 @@ resource "aws_subnet" "crossbarfx_vpc_router2" {
     vpc_id                  = aws_vpc.crossbarfx_vpc.id
     cidr_block              = "10.0.5.0/24"
     map_public_ip_on_launch = "false"
-    availability_zone       = var.AWS_AZ[1]
+    availability_zone       = var.aws-azs[var.aws-region][1]
 
     tags = {
         Name = "crossbarfx_vpc_router2"
@@ -128,7 +128,7 @@ resource "aws_subnet" "crossbarfx_vpc_router3" {
     vpc_id                  = aws_vpc.crossbarfx_vpc.id
     cidr_block              = "10.0.6.0/24"
     map_public_ip_on_launch = "false"
-    availability_zone       = var.AWS_AZ[2]
+    availability_zone       = var.aws-azs[var.aws-region][2]
 
     tags = {
         Name = "crossbarfx_vpc_router3"

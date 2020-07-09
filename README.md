@@ -400,7 +400,8 @@ The Terraform based setup on AWS is based on AMIs which come with Docker and Cro
 
 We use [HashiCorp Packer](https://www.packer.io/) to bake AMI images directly from our Crossbar.io FX Docker images.
 
-To rebuild and publish AMI images after a new Crossbar.io FX Docker image has been published, run:
+The AMI is build according to the packaging file [crossbarfx-ami.json](crossbarfx-ami.json). To rebuild and
+publish AMI images after a new Crossbar.io FX Docker image has been published, run:
 
 ```console
 make build

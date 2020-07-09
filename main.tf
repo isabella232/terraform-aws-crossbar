@@ -6,10 +6,10 @@ terraform {
 
 # https://www.terraform.io/docs/providers/aws/index.html
 provider "aws" {
-    region = var.AWS_REGION
+    region = var.aws-region
 }
 
 resource "aws_key_pair" "crossbarfx_keypair" {
     key_name   = "crossbarfx_keypair"
-    public_key = file(var.PUBKEY)
+    public_key = file(var.admin-pubkey)
 }

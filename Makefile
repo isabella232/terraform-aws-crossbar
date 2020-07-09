@@ -22,33 +22,28 @@ version:
 
 init:
 	terraform init \
-		-var PUBKEY=${HOME}/.ssh/id_rsa.pub \
-		-var DOMAIN_NAME="example.com" \
-		-var DOMAIN_ID="examplecom"
+		-var admin-pubkey=${HOME}/.ssh/id_rsa.pub \
+		-var dns-domain-name="example.com"
 
 plan:
 	terraform plan \
-		-var PUBKEY=${HOME}/.ssh/id_rsa.pub \
-		-var DOMAIN_NAME="example.com" \
-		-var DOMAIN_ID="examplecom"
+		-var admin-pubkey=${HOME}/.ssh/id_rsa.pub \
+		-var dns-domain-name="example.com"
 
 apply:
 	terraform apply \
-		-var PUBKEY=${HOME}/.ssh/id_rsa.pub \
-		-var DOMAIN_NAME="example.com" \
-		-var DOMAIN_ID="examplecom"
+		-var admin-pubkey=${HOME}/.ssh/id_rsa.pub \
+		-var dns-domain-name="example.com"
 
 destroy:
 	terraform destroy \
-		-var PUBKEY=${HOME}/.ssh/id_rsa.pub \
-		-var DOMAIN_NAME="example.com" \
-		-var DOMAIN_ID="examplecom"
+		-var admin-pubkey=${HOME}/.ssh/id_rsa.pub \
+		-var dns-domain-name="example.com"
 
 refresh:
 	terraform refresh \
-		-var PUBKEY=${HOME}/.ssh/id_rsa.pub \
-		-var DOMAIN_NAME="example.com" \
-		-var DOMAIN_ID="examplecom"
+		-var admin-pubkey=${HOME}/.ssh/id_rsa.pub \
+		-var dns-domain-name="example.com"
 
 list_nodes:
 	ansible-inventory -i aws_ec2.yml --graph

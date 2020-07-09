@@ -52,6 +52,7 @@ resource "aws_lb_listener" "crossbarfx-nlb-listener" {
 }
 
 resource "aws_lb_listener" "crossbarfx-nlb-listener-tls" {
+    count = var.enable-tls ? 1 : 0
     load_balancer_arn = aws_lb.crossbarfx-nlb.arn
     port              = "443"
     protocol          = "TLS"
@@ -61,5 +62,4 @@ resource "aws_lb_listener" "crossbarfx-nlb-listener-tls" {
         type             = "forward"
         target_group_arn = aws_lb_target_group.crossbarfx-nlb-target-group.arn
     }
-    count = var.ENABLE_TLS ? 1 : 0
 }

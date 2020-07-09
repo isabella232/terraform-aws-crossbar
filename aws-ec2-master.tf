@@ -2,8 +2,10 @@
 
 # https://www.terraform.io/docs/providers/aws/r/instance.html
 resource "aws_instance" "crossbarfx_node_master" {
-    ami = var.AMIS[var.AWS_REGION]
-    instance_type = var.INSTANCE_TYPE
+    count = var.enable-master ? 1 : 0
+
+    ami = var.aws-amis[var.aws-region]
+    instance_type = var.master-instance-type
     # master_url = "ws://${self.private_ip}:9000/ws"
 
     subnet_id = aws_subnet.crossbarfx_vpc_master.id
@@ -28,11 +30,20 @@ resource "aws_instance" "crossbarfx_node_master" {
 }
 
 resource "aws_network_interface" "crossbarfx_node_master_nic1" {
+    count = var.enable-master ? 1 : 0
+
     subnet_id       = aws_subnet.crossbarfx_vpc_master.id
     private_ips     = ["10.0.10.10"]
-    security_groups = ["${aws_security_group.crossbarfx_master_node.id}"]
+    security_groups = [aws_security_group.crossbarfx_master_node.id]
     attachment {
-        instance  = aws_instance.crossbarfx_node_master.id
+        instance  = aws_instance.crossbarfx_node_master[0].id
         device_index = 1
     }
+}
+
+resource "aws_eip" "crossbarfx_master" {
+    count = var.enable-master ? 1 : 0
+
+    instance = aws_instance.crossbarfx_node_master[0].id
+    vpc      = true
 }
