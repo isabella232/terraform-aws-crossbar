@@ -24,6 +24,7 @@ resource "aws_route53_record" "crossbarfx_zonerec_ns" {
 resource "aws_route53_record" "crossbarfx_zonerec_www" {
     zone_id = aws_route53_zone.crossbarfx_zone.zone_id
     name    = var.dns-domain-name
+    ttl     = 30
     type    = "A"
     alias {
         name                   = aws_lb.crossbarfx-nlb.dns_name
@@ -37,6 +38,7 @@ resource "aws_route53_record" "crossbarfx_zonerec_master" {
 
     zone_id = aws_route53_zone.crossbarfx_zone.zone_id
     name    = "master.${var.dns-domain-name}"
+    ttl     = 30
     type    = "A"
     # records = [aws_instance.crossbarfx_node_master[0].public_ip]
     records = [aws_eip.crossbarfx_master[0].public_ip]
