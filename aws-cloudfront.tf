@@ -2,22 +2,17 @@
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
     origin {
-        domain_name = aws_s3_bucket.crossbarfx-web.website_endpoint
-        origin_id   = "crossbarfx-web"
+        domain_name = aws_s3_bucket.crossbarfx-web.bucket_regional_domain_name
+        origin_id   = aws_s3_bucket.crossbarfx-web.bucket
 
-        // The origin must be http even if it's on S3 for redirects to work properly
-        // so the website_endpoint is used and http-only as S3 doesn't support https for this
-        custom_origin_config {
-            http_port = 80
-            https_port = 443
-            origin_protocol_policy = "http-only"
-            origin_ssl_protocols = ["TLSv1.2"]
+        s3_origin_config {
+            origin_access_identity = aws_cloudfront_origin_access_identity.crossbarfx-web.cloudfront_access_identity_path
         }
     }
 
     enabled                 = true
     default_root_object     = "index.html"
-    aliases                 = [var.dns-domain-name, "www.${var.dns-domain-name}"]
+    aliases                 = [aws_s3_bucket.crossbarfx-web.bucket, var.dns-domain-name, "www.${var.dns-domain-name}"]
 
     logging_config {
         include_cookies = false
@@ -28,10 +23,10 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     default_cache_behavior {
         allowed_methods  = ["GET", "HEAD", "OPTIONS"]
         cached_methods   = ["GET", "HEAD"]
-        target_origin_id = "myS3Origin"
+        target_origin_id = aws_s3_bucket.crossbarfx-web.bucket
 
         forwarded_values {
-            query_string = false
+            query_string = true
 
             cookies {
                 forward = "none"
@@ -46,6 +41,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
     viewer_certificate {
         cloudfront_default_certificate = true
+        ssl_support_method       = "sni-only"
+        minimum_protocol_version = "TLSv1.2_2018"
     }
 
     # viewer_certificate {
@@ -59,4 +56,6 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
             restriction_type = "none"
         }
     }
+
+    depends_on = [aws_s3_bucket.crossbarfx-web, aws_s3_bucket.crossbarfx-weblog]
 }
