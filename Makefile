@@ -21,9 +21,7 @@ version:
 	docker run --rm crossbario/crossbarfx:pypy-slim-amd64 version
 
 init:
-	terraform init \
-		-var admin-pubkey=${HOME}/.ssh/id_rsa.pub \
-		-var dns-domain-name="example.com"
+	terraform init
 
 plan:
 	terraform plan \

@@ -2,16 +2,16 @@
 
 # https://www.terraform.io/docs/modules/#standard-module-structure
 
-output "crossbarfx_dns_name" {
-    value = aws_lb.crossbarfx-nlb.dns_name
+output "crossbar_dns_name" {
+    value = aws_lb.crossbar-nlb.dns_name
 }
 
 
-output "crossbarfx_master_public_ip" {
-    value = aws_instance.crossbarfx_node_master[0].public_ip
+output "crossbar_master_public_ip" {
+    value = aws_instance.crossbar_node_master[0].public_ip
 }
 
 
-output "crossbarfx_master_private_ip" {
-    value = aws_instance.crossbarfx_node_master[0].private_ip
+output "crossbar_master_private_ip" {
+    value = aws_instance.crossbar_node_master[0].private_ip
 }

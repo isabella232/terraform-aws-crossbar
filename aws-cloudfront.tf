@@ -2,28 +2,28 @@
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
     origin {
-        domain_name = aws_s3_bucket.crossbarfx-web.bucket_regional_domain_name
-        origin_id   = aws_s3_bucket.crossbarfx-web.bucket
+        domain_name = aws_s3_bucket.crossbar-web.bucket_regional_domain_name
+        origin_id   = aws_s3_bucket.crossbar-web.bucket
 
         s3_origin_config {
-            origin_access_identity = aws_cloudfront_origin_access_identity.crossbarfx-web.cloudfront_access_identity_path
+            origin_access_identity = aws_cloudfront_origin_access_identity.crossbar-web.cloudfront_access_identity_path
         }
     }
 
     enabled                 = true
     default_root_object     = "index.html"
-    aliases                 = [aws_s3_bucket.crossbarfx-web.bucket, var.dns-domain-name, "www.${var.dns-domain-name}"]
+    aliases                 = [aws_s3_bucket.crossbar-web.bucket, var.dns-domain-name, "www.${var.dns-domain-name}"]
 
     logging_config {
         include_cookies = false
-        bucket          = aws_s3_bucket.crossbarfx-weblog.bucket_domain_name
+        bucket          = aws_s3_bucket.crossbar-weblog.bucket_domain_name
         prefix          = "weblogs"
     }
 
     default_cache_behavior {
         allowed_methods  = ["GET", "HEAD", "OPTIONS"]
         cached_methods   = ["GET", "HEAD"]
-        target_origin_id = aws_s3_bucket.crossbarfx-web.bucket
+        target_origin_id = aws_s3_bucket.crossbar-web.bucket
 
         forwarded_values {
             query_string = true
@@ -57,5 +57,5 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
         }
     }
 
-    depends_on = [aws_s3_bucket.crossbarfx-web, aws_s3_bucket.crossbarfx-weblog]
+    depends_on = [aws_s3_bucket.crossbar-web, aws_s3_bucket.crossbar-weblog]
 }

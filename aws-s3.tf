@@ -3,34 +3,34 @@
 #
 # web
 #
-resource "aws_cloudfront_origin_access_identity" "crossbarfx-web" {
-    comment = "crossbarfx-web"
+resource "aws_cloudfront_origin_access_identity" "crossbar-web" {
+    comment = "crossbar-web"
 }
 
-data "aws_iam_policy_document" "read-crossbarfx-web-bucket" {
+data "aws_iam_policy_document" "read-crossbar-web-bucket" {
     statement {
         actions   = ["s3:GetObject"]
-        resources = ["${aws_s3_bucket.crossbarfx-web.arn}/*"]
+        resources = ["${aws_s3_bucket.crossbar-web.arn}/*"]
 
         principals {
             type        = "AWS"
-            identifiers = [aws_cloudfront_origin_access_identity.crossbarfx-web.iam_arn]
+            identifiers = [aws_cloudfront_origin_access_identity.crossbar-web.iam_arn]
         }
     }
 
     statement {
         actions   = ["s3:ListBucket"]
-        resources = [aws_s3_bucket.crossbarfx-web.arn]
+        resources = [aws_s3_bucket.crossbar-web.arn]
 
         principals {
             type        = "AWS"
-            identifiers = [aws_cloudfront_origin_access_identity.crossbarfx-web.iam_arn]
+            identifiers = [aws_cloudfront_origin_access_identity.crossbar-web.iam_arn]
         }
     }
 }
 
 # https://www.terraform.io/docs/providers/aws/r/s3_bucket.html
-resource "aws_s3_bucket" "crossbarfx-web" {
+resource "aws_s3_bucket" "crossbar-web" {
     bucket = var.domain-web-bucket
     acl    = "public-read"
 
@@ -39,23 +39,23 @@ resource "aws_s3_bucket" "crossbarfx-web" {
     }
 
     logging {
-        target_bucket = aws_s3_bucket.crossbarfx-weblog.id
+        target_bucket = aws_s3_bucket.crossbar-weblog.id
         target_prefix = "web/"
     }
 
     tags    = {
-        Name = "crossbarfx-web"
+        Name = "crossbar-web"
     }
 }
 
-resource "aws_s3_bucket_policy" "read-crossbarfx-web" {
-    bucket = aws_s3_bucket.crossbarfx-web.id
+resource "aws_s3_bucket_policy" "read-crossbar-web" {
+    bucket = aws_s3_bucket.crossbar-web.id
 
-    policy = data.aws_iam_policy_document.read-crossbarfx-web-bucket.json
+    policy = data.aws_iam_policy_document.read-crossbar-web-bucket.json
 }
 
-resource "aws_s3_bucket_public_access_block" "public-access-crossbarfx-web" {
-    bucket = aws_s3_bucket.crossbarfx-web.id
+resource "aws_s3_bucket_public_access_block" "public-access-crossbar-web" {
+    bucket = aws_s3_bucket.crossbar-web.id
 
     block_public_acls       = true
     block_public_policy     = true
@@ -67,33 +67,33 @@ resource "aws_s3_bucket_public_access_block" "public-access-crossbarfx-web" {
 #
 # download
 #
-resource "aws_cloudfront_origin_access_identity" "crossbarfx-download" {
-    comment = "crossbarfx-download"
+resource "aws_cloudfront_origin_access_identity" "crossbar-download" {
+    comment = "crossbar-download"
 }
 
-data "aws_iam_policy_document" "read-crossbarfx-download-bucket" {
+data "aws_iam_policy_document" "read-crossbar-download-bucket" {
     statement {
         actions   = ["s3:GetObject"]
-        resources = ["${aws_s3_bucket.crossbarfx-download.arn}/*"]
+        resources = ["${aws_s3_bucket.crossbar-download.arn}/*"]
 
         principals {
             type        = "AWS"
-            identifiers = [aws_cloudfront_origin_access_identity.crossbarfx-download.iam_arn]
+            identifiers = [aws_cloudfront_origin_access_identity.crossbar-download.iam_arn]
         }
     }
 
     statement {
         actions   = ["s3:ListBucket"]
-        resources = [aws_s3_bucket.crossbarfx-download.arn]
+        resources = [aws_s3_bucket.crossbar-download.arn]
 
         principals {
             type        = "AWS"
-            identifiers = [aws_cloudfront_origin_access_identity.crossbarfx-download.iam_arn]
+            identifiers = [aws_cloudfront_origin_access_identity.crossbar-download.iam_arn]
         }
     }
 }
 
-resource "aws_s3_bucket" "crossbarfx-download" {
+resource "aws_s3_bucket" "crossbar-download" {
     bucket  = var.domain-download-bucket
     acl    = "public-read"
 
@@ -102,23 +102,23 @@ resource "aws_s3_bucket" "crossbarfx-download" {
     }
 
     logging {
-        target_bucket = aws_s3_bucket.crossbarfx-weblog.id
+        target_bucket = aws_s3_bucket.crossbar-weblog.id
         target_prefix = "download/"
     }
 
     tags    = {
-        Name = "crossbarfx-download"
+        Name = "crossbar-download"
     }
 }
 
-resource "aws_s3_bucket_policy" "read-crossbarfx-download" {
-    bucket = aws_s3_bucket.crossbarfx-download.id
+resource "aws_s3_bucket_policy" "read-crossbar-download" {
+    bucket = aws_s3_bucket.crossbar-download.id
 
-    policy = data.aws_iam_policy_document.read-crossbarfx-download-bucket.json
+    policy = data.aws_iam_policy_document.read-crossbar-download-bucket.json
 }
 
-resource "aws_s3_bucket_public_access_block" "public-access-crossbarfx-download" {
-    bucket = aws_s3_bucket.crossbarfx-download.id
+resource "aws_s3_bucket_public_access_block" "public-access-crossbar-download" {
+    bucket = aws_s3_bucket.crossbar-download.id
 
     block_public_acls       = true
     block_public_policy     = true
@@ -130,11 +130,11 @@ resource "aws_s3_bucket_public_access_block" "public-access-crossbarfx-download"
 #
 # weblog
 #
-resource "aws_s3_bucket" "crossbarfx-weblog" {
+resource "aws_s3_bucket" "crossbar-weblog" {
     bucket  = var.domain-weblog-bucket
     acl     = "log-delivery-write"
     tags    = {
-        Name = "crossbarfx-weblog"
+        Name = "crossbar-weblog"
     }
 }
 
@@ -142,10 +142,10 @@ resource "aws_s3_bucket" "crossbarfx-weblog" {
 #
 # backup
 #
-resource "aws_s3_bucket" "crossbarfx-backup" {
+resource "aws_s3_bucket" "crossbar-backup" {
     bucket  = var.domain-backup-bucket
     acl     = "private"
     tags    = {
-        Name = "crossbarfx-backup"
+        Name = "crossbar-backup"
     }
 }

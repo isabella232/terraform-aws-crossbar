@@ -1,37 +1,37 @@
 # Copyright (c) Crossbar.io Technologies GmbH. Licensed under GPL 3.0.
 
 # https://www.terraform.io/docs/providers/aws/r/launch_configuration.html
-resource "aws_launch_configuration" "crossbarfx_cluster_launchconfig" {
-    name_prefix     = "crossbarfx_cluster_launchconfig"
+resource "aws_launch_configuration" "crossbar_cluster_launchconfig" {
+    name_prefix     = "crossbar_cluster_launchconfig"
     image_id        = var.aws-amis[var.aws-region]
     instance_type   = var.dataplane-instance-type
 
-    key_name        = aws_key_pair.crossbarfx_keypair.key_name
+    key_name        = aws_key_pair.crossbar_keypair.key_name
     security_groups = [
-        aws_security_group.crossbarfx_cluster_node.id
+        aws_security_group.crossbar_cluster_node.id
     ]
 
     user_data = templatefile("${path.module}/files/setup-edge.sh", {
-            file_system_id = aws_efs_file_system.crossbarfx_efs.id,
-            access_point_id_nodes = aws_efs_access_point.crossbarfx_efs_nodes.id
-            master_url = "ws://${aws_instance.crossbarfx_node_master[0].private_ip}:${var.master-port}/ws"
-            master_hostname = aws_instance.crossbarfx_node_master[0].private_ip
+            file_system_id = aws_efs_file_system.crossbar_efs.id,
+            access_point_id_nodes = aws_efs_access_point.crossbar_efs_nodes.id
+            master_url = "ws://${aws_instance.crossbar_node_master[0].private_ip}:${var.master-port}/ws"
+            master_hostname = aws_instance.crossbar_node_master[0].private_ip
             master_port = var.master-port
     })
 }
 
 # https://www.terraform.io/docs/providers/aws/r/autoscaling_group.html
-resource "aws_autoscaling_group" "crossbarfx_cluster_autoscaling" {
-    name                      = "crossbarfx_cluster_autoscaling"
-    launch_configuration      = aws_launch_configuration.crossbarfx_cluster_launchconfig.name
+resource "aws_autoscaling_group" "crossbar_cluster_autoscaling" {
+    name                      = "crossbar_cluster_autoscaling"
+    launch_configuration      = aws_launch_configuration.crossbar_cluster_launchconfig.name
 
     vpc_zone_identifier       = [
-        aws_subnet.crossbarfx_vpc_public1.id,
-        aws_subnet.crossbarfx_vpc_public2.id,
-        aws_subnet.crossbarfx_vpc_public3.id
+        aws_subnet.crossbar_vpc_public1.id,
+        aws_subnet.crossbar_vpc_public2.id,
+        aws_subnet.crossbar_vpc_public3.id
     ]
     # load_balancers            = [
-    #     aws_lb.crossbarfx-nlb.name
+    #     aws_lb.crossbar-nlb.name
     # ]
     # target_group_arns = []
 
@@ -60,9 +60,9 @@ resource "aws_autoscaling_group" "crossbarfx_cluster_autoscaling" {
 }
 
 # https://www.terraform.io/docs/providers/aws/r/autoscaling_policy.html
-resource "aws_autoscaling_policy" "crossbarfx_cluster_cpu_policy" {
-    name                   = "crossbarfx_cluster_cpu_policy"
-    autoscaling_group_name = aws_autoscaling_group.crossbarfx_cluster_autoscaling.name
+resource "aws_autoscaling_policy" "crossbar_cluster_cpu_policy" {
+    name                   = "crossbar_cluster_cpu_policy"
+    autoscaling_group_name = aws_autoscaling_group.crossbar_cluster_autoscaling.name
     adjustment_type        = "ChangeInCapacity"
     scaling_adjustment     = "1"
     cooldown               = "300"
@@ -70,9 +70,9 @@ resource "aws_autoscaling_policy" "crossbarfx_cluster_cpu_policy" {
 }
 
 # https://www.terraform.io/docs/providers/aws/r/cloudwatch_metric_alarm.html
-resource "aws_cloudwatch_metric_alarm" "crossbarfx_cluster_cpu_alarm" {
-    alarm_name          = "crossbarfx_cluster_cpu-alarm"
-    alarm_description   = "crossbarfx_cluster_cpu-alarm"
+resource "aws_cloudwatch_metric_alarm" "crossbar_cluster_cpu_alarm" {
+    alarm_name          = "crossbar_cluster_cpu-alarm"
+    alarm_description   = "crossbar_cluster_cpu-alarm"
     comparison_operator = "GreaterThanOrEqualToThreshold"
     evaluation_periods  = "2"
     metric_name         = "CPUUtilization"
@@ -82,11 +82,11 @@ resource "aws_cloudwatch_metric_alarm" "crossbarfx_cluster_cpu_alarm" {
     threshold           = "60"
 
     dimensions = {
-        "AutoScalingGroupName" = aws_autoscaling_group.crossbarfx_cluster_autoscaling.name
+        "AutoScalingGroupName" = aws_autoscaling_group.crossbar_cluster_autoscaling.name
     }
 
     actions_enabled = true
-    alarm_actions   = [aws_autoscaling_policy.crossbarfx_cluster_cpu_policy.arn]
+    alarm_actions   = [aws_autoscaling_policy.crossbar_cluster_cpu_policy.arn]
 }
 
 #
@@ -94,9 +94,9 @@ resource "aws_cloudwatch_metric_alarm" "crossbarfx_cluster_cpu_alarm" {
 #
 
 # https://www.terraform.io/docs/providers/aws/r/autoscaling_policy.html
-resource "aws_autoscaling_policy" "crossbarfx_cluster_cpu_policy_scaledown" {
-    name                   = "crossbarfx_cluster_cpu_olicy_scaledown"
-    autoscaling_group_name = aws_autoscaling_group.crossbarfx_cluster_autoscaling.name
+resource "aws_autoscaling_policy" "crossbar_cluster_cpu_policy_scaledown" {
+    name                   = "crossbar_cluster_cpu_olicy_scaledown"
+    autoscaling_group_name = aws_autoscaling_group.crossbar_cluster_autoscaling.name
     adjustment_type        = "ChangeInCapacity"
     scaling_adjustment     = "-1"
     cooldown               = "300"
@@ -104,9 +104,9 @@ resource "aws_autoscaling_policy" "crossbarfx_cluster_cpu_policy_scaledown" {
 }
 
 # https://www.terraform.io/docs/providers/aws/r/cloudwatch_metric_alarm.html
-resource "aws_cloudwatch_metric_alarm" "crossbarfx_cluster_cpu_alarm_scaledown" {
-    alarm_name          = "crossbarfx_cluster_cpu_alarm_scaledown"
-    alarm_description   = "crossbarfx_cluster_cpu_alarm_scaledown"
+resource "aws_cloudwatch_metric_alarm" "crossbar_cluster_cpu_alarm_scaledown" {
+    alarm_name          = "crossbar_cluster_cpu_alarm_scaledown"
+    alarm_description   = "crossbar_cluster_cpu_alarm_scaledown"
     comparison_operator = "LessThanOrEqualToThreshold"
     evaluation_periods  = "2"
     metric_name         = "CPUUtilization"
@@ -116,9 +116,9 @@ resource "aws_cloudwatch_metric_alarm" "crossbarfx_cluster_cpu_alarm_scaledown" 
     threshold           = "10"
 
     dimensions = {
-        "AutoScalingGroupName" = aws_autoscaling_group.crossbarfx_cluster_autoscaling.name
+        "AutoScalingGroupName" = aws_autoscaling_group.crossbar_cluster_autoscaling.name
     }
 
     actions_enabled = true
-    alarm_actions   = [aws_autoscaling_policy.crossbarfx_cluster_cpu_policy_scaledown.arn]
+    alarm_actions   = [aws_autoscaling_policy.crossbar_cluster_cpu_policy_scaledown.arn]
 }
