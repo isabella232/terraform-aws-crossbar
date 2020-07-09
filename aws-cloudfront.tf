@@ -3,7 +3,7 @@
 resource "aws_cloudfront_distribution" "s3_distribution" {
     origin {
         domain_name = aws_s3_bucket.crossbarfx-web.website_endpoint
-        origin_id   = "myS3Origin"
+        origin_id   = "crossbarfx-web"
 
         // The origin must be http even if it's on S3 for redirects to work properly
         // so the website_endpoint is used and http-only as S3 doesn't support https for this
@@ -16,9 +16,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
 
     enabled                 = true
-    comment                 = "Some comment"
     default_root_object     = "index.html"
-    aliases                 = ["mysite.example.com", "yoursite.example.com"]
+    aliases                 = [var.dns-domain-name, "www.${var.dns-domain-name}"]
 
     logging_config {
         include_cookies = false
@@ -48,6 +47,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     viewer_certificate {
         cloudfront_default_certificate = true
     }
+
     # viewer_certificate {
     #     acm_certificate_arn = "${aws_acm_certificate_validation.default.certificate_arn}"
     #     ssl_support_method = "sni-only"
