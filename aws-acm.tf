@@ -47,6 +47,32 @@ resource "aws_route53_record" "crossbar_dns_cert_validation_alt1_rec" {
     ttl     = 60
 }
 
+# verification record for cert SAN[1]
+resource "aws_route53_record" "crossbar_dns_cert_validation_alt2_rec" {
+    # only instantiate the resource when TLS is enabled
+
+    name    = aws_acm_certificate.crossbar_dns_cert.domain_validation_options.2.resource_record_name
+    type    = aws_acm_certificate.crossbar_dns_cert.domain_validation_options.2.resource_record_type
+    zone_id = aws_route53_zone.crossbar-zone.zone_id
+    records = [
+        aws_acm_certificate.crossbar_dns_cert.domain_validation_options.2.resource_record_value
+    ]
+    ttl     = 60
+}
+
+# verification record for cert SAN[2]
+resource "aws_route53_record" "crossbar_dns_cert_validation_alt3_rec" {
+    # only instantiate the resource when TLS is enabled
+
+    name    = aws_acm_certificate.crossbar_dns_cert.domain_validation_options.3.resource_record_name
+    type    = aws_acm_certificate.crossbar_dns_cert.domain_validation_options.3.resource_record_type
+    zone_id = aws_route53_zone.crossbar-zone.zone_id
+    records = [
+        aws_acm_certificate.crossbar_dns_cert.domain_validation_options.3.resource_record_value
+    ]
+    ttl     = 60
+}
+
 # certificate verification record
 resource "aws_acm_certificate_validation" "crossbar_dns_cert_validation" {
     # only instantiate the resource when TLS is enabled
