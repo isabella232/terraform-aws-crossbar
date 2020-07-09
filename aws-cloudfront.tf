@@ -10,6 +10,7 @@ resource "aws_cloudfront_distribution" "crossbar-web" {
         }
     }
 
+    comment                 = var.dns-domain-name
     enabled                 = true
     is_ipv6_enabled         = true
     default_root_object     = "index.html"

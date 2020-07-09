@@ -47,17 +47,17 @@ resource "aws_route53_record" "crossbar-master" {
 
 
 # create a Route53 ALIAS record to the Cloudfront distribution
-resource "aws_route53_record" "crossbar-web-alias" {
-  zone_id = aws_route53_zone.crossbar-zone.zone_id
-  name    = var.dns-domain-name
-  type    = "A"
+# resource "aws_route53_record" "crossbar-web-alias" {
+#   zone_id = aws_route53_zone.crossbar-zone.zone_id
+#   name    = var.dns-domain-name
+#   type    = "A"
 
-  alias {
-    name                   = var.dns-domain-name
-    zone_id                = aws_cloudfront_distribution.crossbar-web.hosted_zone_id
-    evaluate_target_health = false
-  }
-}
+#   alias {
+#     name                   = var.dns-domain-name
+#     zone_id                = aws_cloudfront_distribution.crossbar-web.hosted_zone_id
+#     evaluate_target_health = false
+#   }
+# }
 
 # create a Route53 CNAME record to the Cloudfront distribution
 resource "aws_route53_record" "crossbar-web-cname" {
