@@ -24,7 +24,6 @@ resource "aws_route53_record" "crossbarfx_zonerec_ns" {
 resource "aws_route53_record" "crossbarfx_zonerec_www" {
     zone_id = aws_route53_zone.crossbarfx_zone.zone_id
     name    = var.dns-domain-name
-    ttl     = 30
     type    = "A"
     alias {
         name                   = aws_lb.crossbarfx-nlb.dns_name
