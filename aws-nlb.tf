@@ -52,12 +52,11 @@ resource "aws_lb_listener" "crossbar-nlb-listener" {
 }
 
 resource "aws_lb_listener" "crossbar-nlb-listener-tls" {
-    count = var.enable-tls ? 1 : 0
     load_balancer_arn = aws_lb.crossbar-nlb.arn
     port              = "443"
     protocol          = "TLS"
     ssl_policy        = "ELBSecurityPolicy-FS-1-2-Res-2019-08"
-    certificate_arn   = aws_acm_certificate.crossbar_dns_cert.0.arn
+    certificate_arn   = aws_acm_certificate_validation.crossbar_dns_cert_validation.certificate_arn
     default_action {
         type             = "forward"
         target_group_arn = aws_lb_target_group.crossbar-nlb-target-group.arn
