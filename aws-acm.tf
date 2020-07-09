@@ -27,7 +27,7 @@ resource "aws_route53_record" "crossbar_dns_cert_validation_cn_rec" {
 
     name    = aws_acm_certificate.crossbar_dns_cert.0.domain_validation_options.0.resource_record_name
     type    = aws_acm_certificate.crossbar_dns_cert.0.domain_validation_options.0.resource_record_type
-    zone_id = aws_route53_zone.crossbar_zone.zone_id
+    zone_id = aws_route53_zone.crossbar-zone.zone_id
     records = [
         aws_acm_certificate.crossbar_dns_cert.0.domain_validation_options.0.resource_record_value
     ]
@@ -41,7 +41,7 @@ resource "aws_route53_record" "crossbar_dns_cert_validation_alt1_rec" {
 
     name    = aws_acm_certificate.crossbar_dns_cert.0.domain_validation_options.1.resource_record_name
     type    = aws_acm_certificate.crossbar_dns_cert.0.domain_validation_options.1.resource_record_type
-    zone_id = aws_route53_zone.crossbar_zone.zone_id
+    zone_id = aws_route53_zone.crossbar-zone.zone_id
     records = [
         aws_acm_certificate.crossbar_dns_cert.0.domain_validation_options.1.resource_record_value
     ]

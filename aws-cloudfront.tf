@@ -1,6 +1,6 @@
 # Copyright (c) Crossbar.io Technologies GmbH. Licensed under GPL 3.0.
 
-resource "aws_cloudfront_distribution" "s3_distribution" {
+resource "aws_cloudfront_distribution" "crossbar-web" {
     origin {
         domain_name = aws_s3_bucket.crossbar-web.bucket_regional_domain_name
         origin_id   = aws_s3_bucket.crossbar-web.bucket

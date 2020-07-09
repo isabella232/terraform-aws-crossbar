@@ -32,6 +32,7 @@ data "aws_iam_policy_document" "read-crossbar-web-bucket" {
 # https://www.terraform.io/docs/providers/aws/r/s3_bucket.html
 resource "aws_s3_bucket" "crossbar-web" {
     bucket = var.domain-web-bucket
+    force_destroy = true
     acl    = "public-read"
 
     website {
@@ -95,6 +96,7 @@ data "aws_iam_policy_document" "read-crossbar-download-bucket" {
 
 resource "aws_s3_bucket" "crossbar-download" {
     bucket  = var.domain-download-bucket
+    force_destroy = true
     acl    = "public-read"
 
     website {
@@ -132,6 +134,7 @@ resource "aws_s3_bucket_public_access_block" "public-access-crossbar-download" {
 #
 resource "aws_s3_bucket" "crossbar-weblog" {
     bucket  = var.domain-weblog-bucket
+    force_destroy = true
     acl     = "log-delivery-write"
     tags    = {
         Name = "crossbar-weblog"

@@ -1,6 +1,6 @@
 # Terraform based setup of Crossbar.io FX
 
-[![Documentation](https://img.shields.io/badge/terraform-brightgreen.svg?style=flat)](https://registry.terraform.io/modules/crossbario/crossbarfx)
+[![Documentation](https://img.shields.io/badge/terraform-brightgreen.svg?style=flat)](https://registry.terraform.io/modules/crossbario/crossbar)
 
 This project provides a [Terraform module](https://www.terraform.io/docs/configuration/modules.html) that can create clusters of Crossbar.io FX nodes in AWS.
 The module is [open-source](LICENSE), based on the [Terraform Provider for AWS](https://terraform.io/docs/providers/aws/index.html) and
