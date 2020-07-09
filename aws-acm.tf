@@ -80,8 +80,8 @@ resource "aws_acm_certificate_validation" "crossbar_dns_cert_validation" {
     certificate_arn = aws_acm_certificate.crossbar_dns_cert.arn
     validation_record_fqdns = [
         aws_route53_record.crossbar_dns_cert_validation_cn_rec.fqdn,
-        aws_route53_record.crossbar_dns_cert_validation_alt1_rec.fqdn
-        aws_route53_record.crossbar_dns_cert_validation_alt2_rec.fqdn
+        aws_route53_record.crossbar_dns_cert_validation_alt1_rec.fqdn,
+        aws_route53_record.crossbar_dns_cert_validation_alt2_rec.fqdn,
         aws_route53_record.crossbar_dns_cert_validation_alt3_rec.fqdn
     ]
 }
