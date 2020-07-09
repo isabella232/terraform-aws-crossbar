@@ -13,16 +13,19 @@ resource "aws_cloudfront_distribution" "crossbar-web" {
     enabled                 = true
     is_ipv6_enabled         = true
     default_root_object     = "index.html"
-    aliases                 = [aws_s3_bucket.crossbar-web.bucket, var.dns-domain-name, "www.${var.dns-domain-name}"]
+
+    aliases                 = [var.dns-domain-name, "www.${var.dns-domain-name}"]
+    # error creating CloudFront Distribution: InvalidViewerCertificate: The certificate that is attached to your distribution doesn't cover the alternate domain name (CNAME) that you're trying to add. For more details, see: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html#alternate-domain-names-requirements
+    # aliases                 = [aws_s3_bucket.crossbar-web.bucket, var.dns-domain-name, "www.${var.dns-domain-name}"]
 
     logging_config {
         include_cookies = false
         bucket          = aws_s3_bucket.crossbar-weblog.bucket_domain_name
-        prefix          = "weblogs"
+        prefix          = "web"
     }
 
     default_cache_behavior {
-        allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+        allowed_methods  = ["GET", "HEAD"]
         cached_methods   = ["GET", "HEAD"]
         target_origin_id = aws_s3_bucket.crossbar-web.bucket
 
@@ -34,10 +37,11 @@ resource "aws_cloudfront_distribution" "crossbar-web" {
             }
         }
 
-        viewer_protocol_policy = "allow-all"
+        viewer_protocol_policy = "redirect-to-https"
         min_ttl                = 0
         default_ttl            = 3600
         max_ttl                = 86400
+        compress               = true
     }
 
     viewer_certificate {
