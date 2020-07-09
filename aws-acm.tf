@@ -16,7 +16,9 @@ resource "aws_acm_certificate" "crossbar_dns_cert" {
     # IMPORTANT: only use 1 SAN currently, as there is an open issue when using _multipe_ SANs:
     # https://github.com/terraform-providers/terraform-provider-aws/issues/8531
     subject_alternative_names = [
-        "www.${var.dns-domain-name}"
+        "www.${var.dns-domain-name}",
+        "data.${var.dns-domain-name}",
+        "master.${var.dns-domain-name}"
     ]
 }
 
