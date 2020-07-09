@@ -1,8 +1,16 @@
 # Copyright (c) Crossbar.io Technologies GmbH. Licensed under GPL 3.0.
 
+# Important: needed because certificate for cloudfront must be in us-east-1
+# See: https://aws.amazon.com/premiumsupport/knowledge-center/cloudfront-invalid-viewer-certificate/
+provider "aws" {
+    alias = "virginia"
+    region = "us-east-1"
+}
+
 # TLS certificate for domain, managed (auto-refreshed) by AWS
 resource "aws_acm_certificate" "crossbar_dns_cert" {
-    # only instantiate the resource when TLS is enabled
+    # must be in us-east-1 region for use with Cloudfront
+    provider = "aws.virginia"
 
     # verify certificate using DNS records created in Route 53
     validation_method = "DNS"
@@ -23,7 +31,9 @@ resource "aws_acm_certificate" "crossbar_dns_cert" {
 
 # verification record for cert CN
 resource "aws_route53_record" "crossbar_dns_cert_validation_cn_rec" {
-    # only instantiate the resource when TLS is enabled
+    # must be in us-east-1 region for use with Cloudfront
+    provider = "aws.virginia"
+
 
     name    = aws_acm_certificate.crossbar_dns_cert.domain_validation_options.0.resource_record_name
     type    = aws_acm_certificate.crossbar_dns_cert.domain_validation_options.0.resource_record_type
@@ -36,7 +46,8 @@ resource "aws_route53_record" "crossbar_dns_cert_validation_cn_rec" {
 
 # verification record for cert SAN[0]
 resource "aws_route53_record" "crossbar_dns_cert_validation_alt1_rec" {
-    # only instantiate the resource when TLS is enabled
+    # must be in us-east-1 region for use with Cloudfront
+    provider = "aws.virginia"
 
     name    = aws_acm_certificate.crossbar_dns_cert.domain_validation_options.1.resource_record_name
     type    = aws_acm_certificate.crossbar_dns_cert.domain_validation_options.1.resource_record_type
@@ -49,7 +60,8 @@ resource "aws_route53_record" "crossbar_dns_cert_validation_alt1_rec" {
 
 # verification record for cert SAN[1]
 resource "aws_route53_record" "crossbar_dns_cert_validation_alt2_rec" {
-    # only instantiate the resource when TLS is enabled
+    # must be in us-east-1 region for use with Cloudfront
+    provider = "aws.virginia"
 
     name    = aws_acm_certificate.crossbar_dns_cert.domain_validation_options.2.resource_record_name
     type    = aws_acm_certificate.crossbar_dns_cert.domain_validation_options.2.resource_record_type
@@ -62,7 +74,8 @@ resource "aws_route53_record" "crossbar_dns_cert_validation_alt2_rec" {
 
 # verification record for cert SAN[2]
 resource "aws_route53_record" "crossbar_dns_cert_validation_alt3_rec" {
-    # only instantiate the resource when TLS is enabled
+    # must be in us-east-1 region for use with Cloudfront
+    provider = "aws.virginia"
 
     name    = aws_acm_certificate.crossbar_dns_cert.domain_validation_options.3.resource_record_name
     type    = aws_acm_certificate.crossbar_dns_cert.domain_validation_options.3.resource_record_type
@@ -75,7 +88,8 @@ resource "aws_route53_record" "crossbar_dns_cert_validation_alt3_rec" {
 
 # certificate verification record
 resource "aws_acm_certificate_validation" "crossbar_dns_cert_validation" {
-    # only instantiate the resource when TLS is enabled
+    # must be in us-east-1 region for use with Cloudfront
+    provider = "aws.virginia"
 
     certificate_arn = aws_acm_certificate.crossbar_dns_cert.arn
     validation_record_fqdns = [

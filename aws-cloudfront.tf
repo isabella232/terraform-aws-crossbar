@@ -11,6 +11,7 @@ resource "aws_cloudfront_distribution" "crossbar-web" {
     }
 
     enabled                 = true
+    is_ipv6_enabled         = true
     default_root_object     = "index.html"
     aliases                 = [aws_s3_bucket.crossbar-web.bucket, var.dns-domain-name, "www.${var.dns-domain-name}"]
 
@@ -38,12 +39,6 @@ resource "aws_cloudfront_distribution" "crossbar-web" {
         default_ttl            = 3600
         max_ttl                = 86400
     }
-
-    # viewer_certificate {
-    #     cloudfront_default_certificate = true
-    #     ssl_support_method       = "sni-only"
-    #     minimum_protocol_version = "TLSv1.2_2019"
-    # }
 
     viewer_certificate {
         acm_certificate_arn = aws_acm_certificate_validation.crossbar_dns_cert_validation.certificate_arn
