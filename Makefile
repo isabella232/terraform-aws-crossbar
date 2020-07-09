@@ -28,22 +28,38 @@ init:
 plan:
 	terraform plan \
 		-var admin-pubkey=${HOME}/.ssh/id_rsa.pub \
-		-var dns-domain-name="example.com"
+		-var dns-domain-name="example.com" \
+		-var domain-web-bucket="example.com-web" \
+		-var domain-weblog-bucket="example.com-weblog" \
+		-var domain-download-bucket="example.com-download" \
+		-var domain-backup-bucket="example.com-backup"
 
 apply:
 	terraform apply \
 		-var admin-pubkey=${HOME}/.ssh/id_rsa.pub \
 		-var dns-domain-name="example.com"
+		-var dns-domain-name="example.com" \
+		-var domain-web-bucket="example.com-web" \
+		-var domain-download-bucket="example.com-download" \
+		-var domain-backup-bucket="example.com-backup"
 
 destroy:
 	terraform destroy \
 		-var admin-pubkey=${HOME}/.ssh/id_rsa.pub \
 		-var dns-domain-name="example.com"
+		-var dns-domain-name="example.com" \
+		-var domain-web-bucket="example.com-web" \
+		-var domain-download-bucket="example.com-download" \
+		-var domain-backup-bucket="example.com-backup"
 
 refresh:
 	terraform refresh \
 		-var admin-pubkey=${HOME}/.ssh/id_rsa.pub \
 		-var dns-domain-name="example.com"
+		-var dns-domain-name="example.com" \
+		-var domain-web-bucket="example.com-web" \
+		-var domain-download-bucket="example.com-download" \
+		-var domain-backup-bucket="example.com-backup"
 
 list_nodes:
 	ansible-inventory -i aws_ec2.yml --graph
