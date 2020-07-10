@@ -45,7 +45,7 @@ resource "aws_autoscaling_group" "crossbar_cluster_autoscaling" {
 
     tag {
         key                 = "Name"
-        value               = "Crossbar.io Cloud (${var.dns-domain-name})"
+        value               = "Crossbar.io Cloud - ${var.dns-domain-name}"
         propagate_at_launch = true
     }
     tag {
@@ -90,7 +90,7 @@ resource "aws_cloudwatch_metric_alarm" "crossbar_cluster_cpu_alarm" {
     alarm_actions   = [aws_autoscaling_policy.crossbar_cluster_cpu_policy.arn]
 
     tags = {
-        Name = "Crossbar.io Cloud (${var.dns-domain-name})"
+        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
         node = "cluster"
         env = var.env
     }
@@ -130,7 +130,7 @@ resource "aws_cloudwatch_metric_alarm" "crossbar_cluster_cpu_alarm_scaledown" {
     alarm_actions   = [aws_autoscaling_policy.crossbar_cluster_cpu_policy_scaledown.arn]
 
     tags = {
-        Name = "Crossbar.io Cloud (${var.dns-domain-name})"
+        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
         node = "cluster"
         env = var.env
     }

@@ -5,7 +5,7 @@ resource "aws_route53_zone" "crossbar-zone" {
     name = var.dns-domain-name
 
     tags = {
-        Name = "Crossbar.io Cloud (${var.dns-domain-name})"
+        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
         env = var.env
     }
 }

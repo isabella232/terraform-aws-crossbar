@@ -32,7 +32,7 @@ resource "aws_security_group" "crossbar_cluster_node" {
     }
 
     tags = {
-        Name = "Crossbar.io Cloud (${var.dns-domain-name})"
+        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
         env = var.env
     }
 }
@@ -63,7 +63,7 @@ resource "aws_security_group" "crossbar_master_node" {
     }
 
     tags = {
-        Name = "Crossbar.io Cloud (${var.dns-domain-name})"
+        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
         env = var.env
     }
 }
@@ -94,7 +94,7 @@ resource "aws_security_group" "crossbar_elb" {
     }
 
     tags = {
-        Name = "Crossbar.io Cloud (${var.dns-domain-name})"
+        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
         env = var.env
     }
 }
@@ -121,7 +121,7 @@ resource "aws_security_group" "crossbar_efs" {
     }
 
     tags = {
-        Name = "Crossbar.io Cloud (${var.dns-domain-name})"
+        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
         env = var.env
     }
 }

@@ -36,7 +36,7 @@ resource "aws_acm_certificate" "crossbar_dns_cert1" {
     }
 
     tags = {
-        Name = "Crossbar.io Cloud (${var.dns-domain-name})"
+        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
         env = var.env
     }
 }
@@ -109,7 +109,7 @@ resource "aws_acm_certificate" "crossbar_dns_cert2" {
     }
 
     tags = {
-        Name = "Crossbar.io Cloud (${var.dns-domain-name})"
+        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
         env = var.env
     }
 }
