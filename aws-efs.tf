@@ -7,7 +7,7 @@ resource "aws_efs_file_system" "crossbar_efs" {
     throughput_mode = "bursting"
     encrypted = "true"
     tags = {
-        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        Name = "Crossbar.io Cloud (${var.dns-domain-name})"
         env = var.env
     }
 }
@@ -52,7 +52,7 @@ resource "aws_efs_access_point" "crossbar_efs_master" {
     }
 
     tags = {
-        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        Name = "Crossbar.io Cloud (${var.dns-domain-name})"
         env = var.env
     }
 }
@@ -76,7 +76,7 @@ resource "aws_efs_access_point" "crossbar_efs_nodes" {
     }
 
     tags = {
-        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        Name = "Crossbar.io Cloud (${var.dns-domain-name})"
         env = var.env
     }
 }
@@ -100,7 +100,7 @@ resource "aws_efs_access_point" "crossbar_efs_web" {
     }
 
     tags = {
-        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        Name = "Crossbar.io Cloud (${var.dns-domain-name})"
         env = var.env
     }
 }
