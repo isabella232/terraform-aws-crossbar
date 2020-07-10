@@ -4,8 +4,10 @@
 
 apt-get update
 apt-get dist-upgrade -y
-apt-get install -y expect binutils
+apt-get install -y expect binutils awscli
 apt-get autoremove -y
+
+INSTANCE_ID=`curl http://169.254.169.254/latest/meta-data/instance-id`
 
 cd /tmp
 curl https://download.crossbario.com/crossbarfx/linux-amd64/crossbarfx-latest -o crossbarfx
@@ -21,23 +23,49 @@ cd ..
 
 /usr/bin/docker pull crossbario/crossbarfx:pypy-slim-amd64
 
+# we only need RO-access to "/web" as this is shared static web content
 mkdir -p /web
 echo "${file_system_id} /web efs _netdev,tls,accesspoint=${access_point_id_web},ro,auto 0 0" >> /etc/fstab
 mount -a /web
 
+# we (obviously) need RW-access to "/nodes/<PUBKEY>", but since we don't want to create an NFS access
+# point per node, we RW-mount all node directories - BUT then only map the 1 node directory we actually
+# need into the Docker container running our node
 mkdir -p /nodes
 echo "${file_system_id} /nodes efs _netdev,tls,accesspoint=${access_point_id_nodes},rw,auto 0 0" >> /etc/fstab
 mount -a /nodes
 
+# generate new node key pair
+#
 mkdir -p /tmp/.crossbar
 crossbarfx keys --cbdir=/tmp/.crossbar
 PUBKEY=`grep "public-key-ed25519:" /tmp/.crossbar/key.pub  | awk '{print $2}'`
 HOSTNAME=`hostname`
-mkdir /nodes/$HOSTNAME
-mv /tmp/.crossbar /nodes/$HOSTNAME/
+mkdir /nodes/$PUBKEY
+mv /tmp/.crossbar /nodes/$PUBKEY/
 
-echo "export CROSSBARFX_PUBKEY="$PUBKEY >> ~/.profile
-echo "export CROSSBARFX_HOSTNAME="$HOSTNAME >> ~/.profile
+# remember vars in environment
+#
+echo "export CROSSBARFX_PUBKEY="$PUBKEY >> /home/ubuntu/.profile
+echo "export CROSSBARFX_HOSTNAME="$HOSTNAME >> /home/ubuntu/.profile
+echo "export CROSSBARFX_INSTANCE_ID="$INSTANCE_ID >> /home/ubuntu/.profile
+
+# setup aws credentials mechanism
+# https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html
+mkdir /home/ubuntu/.aws/
+aws_config="$(cat <<EOF
+[profile default]
+role_arn = arn:aws:iam::${aws_account_id}:role/crossbar-ec2iam-cluster
+credential_source = Ec2InstanceMetadata
+EOF
+)"
+echo "$aws_config" > /home/ubuntu/.aws/config
+chown -R ubuntu:ubuntu /home/ubuntu/.aws
+chmod 700 /home/ubuntu/.aws
+
+# tag ec2 instance with crossbar node public key
+aws ec2 create-tags --region ${aws_region} --resources $INSTANCE_ID --tags Key=pubkey,Value=$PUBKEY
+aws ec2 describe-tags --region ${aws_region} --filters "Name=resource-id,Values=$INSTANCE_ID"
 
 node_config="$(cat <<EOF
 {
@@ -165,10 +193,10 @@ node_config="$(cat <<EOF
 }
 EOF
 )"
-echo "$node_config" >> /nodes/$HOSTNAME/.crossbar/config.json
+echo "$node_config" >> /nodes/$PUBKEY/.crossbar/config.json
 
-chown -R ubuntu:ubuntu /nodes/$HOSTNAME
-chmod 700 /nodes/$HOSTNAME
+chown -R ubuntu:ubuntu /nodes/$PUBKEY
+chmod 700 /nodes/$PUBKEY
 
 service_unit="$(cat <<EOF
 [Unit]
@@ -188,9 +216,9 @@ Restart=always
 ExecStart=/usr/bin/unbuffer /usr/bin/docker run --rm --name crossbarfx --net=host -t \
     --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
     -v /web:/web:ro \
-    -v /nodes/$HOSTNAME:/nodes/$HOSTNAME:rw \
+    -v /nodes/$PUBKEY:/nodes/$PUBKEY:rw \
     crossbario/crossbarfx:pypy-slim-amd64 \
-    edge start --cbdir=/nodes/$HOSTNAME/.crossbar
+    edge start --cbdir=/nodes/$PUBKEY/.crossbar
 ExecReload=/usr/bin/docker restart crossbarfx
 ExecStop=/usr/bin/docker stop crossbarfx
 ExecStopPost=-/usr/bin/docker rm -f crossbarfx

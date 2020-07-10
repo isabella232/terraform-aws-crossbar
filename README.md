@@ -66,6 +66,7 @@ created for Terraform automation access is preferred for production.
 An IAM user for Terraform with quite broad permissions to get you started easily in development
 should have the following permissions:
 
+* IAMFullAccess
 * AmazonEC2FullAccess
 * AutoScalingFullAccess
 * ElasticLoadBalancingFullAccess

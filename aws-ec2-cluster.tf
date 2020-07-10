@@ -11,6 +11,8 @@ resource "aws_launch_configuration" "crossbar_cluster_launchconfig" {
         aws_security_group.crossbar_cluster_node.id
     ]
 
+    iam_instance_profile = aws_iam_instance_profile.crossbar-ec2profile-cluster.name
+
     user_data = templatefile("${path.module}/files/setup-cluster.sh", {
             file_system_id = aws_efs_file_system.crossbar_efs.id,
             access_point_id_nodes = aws_efs_access_point.crossbar_efs_nodes.id
@@ -18,7 +20,15 @@ resource "aws_launch_configuration" "crossbar_cluster_launchconfig" {
             master_url = "ws://${aws_instance.crossbar_node_master[0].private_ip}:${var.master-port}/ws"
             master_hostname = aws_instance.crossbar_node_master[0].private_ip
             master_port = var.master-port
+            aws_region = var.aws-region
+            aws_account_id = data.aws_caller_identity.current.account_id
     })
+
+    # https://github.com/hashicorp/terraform/issues/532
+    # https://www.terraform.io/docs/configuration/resources.html#lifecycle-lifecycle-customizations
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 # https://www.terraform.io/docs/providers/aws/r/autoscaling_group.html
@@ -57,6 +67,13 @@ resource "aws_autoscaling_group" "crossbar_cluster_autoscaling" {
         key                 = "env"
         value               = var.env
         propagate_at_launch = true
+    }
+
+    # https://github.com/hashicorp/terraform/issues/532
+    # https://www.terraform.io/docs/configuration/resources.html#lifecycle-lifecycle-customizations
+    depends_on = [aws_launch_configuration.crossbar_cluster_launchconfig]
+    lifecycle {
+        create_before_destroy = true
     }
 }
 

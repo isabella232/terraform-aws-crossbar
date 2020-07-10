@@ -4,10 +4,11 @@
 
 apt-get update
 apt-get dist-upgrade -y
-apt-get install -y expect binutils
+apt-get install -y expect binutils awscli
 apt-get autoremove -y
 
 PRIVATE_IP=`curl http://169.254.169.254/latest/meta-data/local-ipv4`
+INSTANCE_ID=`curl http://169.254.169.254/latest/meta-data/instance-id`
 
 cd /tmp
 curl https://download.crossbario.com/crossbarfx/linux-amd64/crossbarfx-latest -o crossbarfx
@@ -25,18 +26,48 @@ cd ..
 
 /usr/bin/docker pull crossbario/crossbarfx:pypy-slim-amd64
 
+# we need RW-access to "/nodes" to drop node activation files in the node directories there
 mkdir -p /nodes
 echo "${file_system_id} /nodes efs _netdev,tls,accesspoint=${access_point_id_nodes},rw,auto 0 0" >> /etc/fstab
 mount -a /nodes
 
+# we (obviously) need RW-access to "/master", since this is the master node directory
 mkdir -p /master
 echo "${file_system_id} /master efs _netdev,tls,accesspoint=${access_point_id_master},rw,auto 0 0" >> /etc/fstab
 mount -a /master
 
+# generate new node key pair
+#
 mkdir -p /master/.crossbar
 crossbarfx keys --cbdir=/master/.crossbar
 PUBKEY=`grep "public-key-ed25519:" /master/.crossbar/key.pub  | awk '{print $2}'`
+HOSTNAME=`hostname`
 
+# remember vars in environment
+#
+echo "export CROSSBARFX_PUBKEY="$PUBKEY >> ~/.profile
+echo "export CROSSBARFX_HOSTNAME="$HOSTNAME >> ~/.profile
+echo "export CROSSBARFX_INSTANCE_ID="$INSTANCE_ID >> ~/.profile
+
+# setup aws credentials mechanism
+# https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-role.html
+mkdir /home/ubuntu/.aws/
+aws_config="$(cat <<EOF
+[profile default]
+role_arn = arn:aws:iam::${aws_account_id}:role/crossbar-ec2iam-master
+credential_source = Ec2InstanceMetadata
+EOF
+)"
+echo "$aws_config" > /home/ubuntu/.aws/config
+chown -R ubuntu:ubuntu /home/ubuntu/.aws
+chmod 700 /home/ubuntu/.aws
+
+# tag ec2 instance with crossbar node public key
+aws ec2 create-tags --region ${aws_region} --resources $INSTANCE_ID --tags Key=pubkey,Value=$PUBKEY
+aws ec2 describe-tags --region ${aws_region} --filters "Name=resource-id,Values=$INSTANCE_ID"
+
+# create node configuration
+#
 node_config="$(cat <<EOF
 {
     "version": 2,

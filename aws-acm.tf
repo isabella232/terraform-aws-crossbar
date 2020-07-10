@@ -94,15 +94,15 @@ resource "aws_acm_certificate" "crossbar_dns_cert2" {
     validation_method = "DNS"
 
     # the certs CN:
-    domain_name       = "*.data.${var.dns-domain-name}"
+    domain_name       = "data.${var.dns-domain-name}"
 
     # the certs SANs:
     #
     # IMPORTANT: only use 1 SAN currently, as there is an open issue when using _multipe_ SANs:
     # https://github.com/terraform-providers/terraform-provider-aws/issues/8531
-    subject_alternative_names = [
-        "data.${var.dns-domain-name}"
-    ]
+    # subject_alternative_names = [
+    #     "*.data.${var.dns-domain-name}"
+    # ]
 
     lifecycle {
         create_before_destroy = true
@@ -126,22 +126,22 @@ resource "aws_route53_record" "crossbar_dns_cert2_validation_cn_rec" {
 }
 
 # verification record for cert SAN[0]
-resource "aws_route53_record" "crossbar_dns_cert2_validation_alt1_rec" {
-    name    = aws_acm_certificate.crossbar_dns_cert2.domain_validation_options.1.resource_record_name
-    type    = aws_acm_certificate.crossbar_dns_cert2.domain_validation_options.1.resource_record_type
-    zone_id = aws_route53_zone.crossbar-zone.zone_id
-    records = [
-        aws_acm_certificate.crossbar_dns_cert2.domain_validation_options.1.resource_record_value
-    ]
-    ttl     = 60
-}
+# resource "aws_route53_record" "crossbar_dns_cert2_validation_alt1_rec" {
+#     name    = aws_acm_certificate.crossbar_dns_cert2.domain_validation_options.1.resource_record_name
+#     type    = aws_acm_certificate.crossbar_dns_cert2.domain_validation_options.1.resource_record_type
+#     zone_id = aws_route53_zone.crossbar-zone.zone_id
+#     records = [
+#         aws_acm_certificate.crossbar_dns_cert2.domain_validation_options.1.resource_record_value
+#     ]
+#     ttl     = 60
+# }
 
 # certificate verification record
 resource "aws_acm_certificate_validation" "crossbar_dns_cert2_validation" {
     certificate_arn = aws_acm_certificate.crossbar_dns_cert2.arn
     validation_record_fqdns = [
-        aws_route53_record.crossbar_dns_cert2_validation_cn_rec.fqdn,
-        aws_route53_record.crossbar_dns_cert2_validation_alt1_rec.fqdn
+        aws_route53_record.crossbar_dns_cert2_validation_cn_rec.fqdn
+        #, aws_route53_record.crossbar_dns_cert2_validation_alt1_rec.fqdn
     ]
 }
 
