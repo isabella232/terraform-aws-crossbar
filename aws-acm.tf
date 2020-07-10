@@ -94,14 +94,14 @@ resource "aws_acm_certificate" "crossbar_dns_cert2" {
     validation_method = "DNS"
 
     # the certs CN:
-    domain_name       = "data.${var.dns-domain-name}"
+    domain_name       = "*.data.${var.dns-domain-name}"
 
     # the certs SANs:
     #
     # IMPORTANT: only use 1 SAN currently, as there is an open issue when using _multipe_ SANs:
     # https://github.com/terraform-providers/terraform-provider-aws/issues/8531
     subject_alternative_names = [
-        "*.data.${var.dns-domain-name}"
+        "data.${var.dns-domain-name}"
     ]
 
     lifecycle {

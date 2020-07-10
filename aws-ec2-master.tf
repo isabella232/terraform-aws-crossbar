@@ -32,8 +32,12 @@ resource "aws_network_interface" "crossbar_node_master_nic1" {
     count = var.enable-master ? 1 : 0
 
     subnet_id       = aws_subnet.crossbar_vpc_master.id
-    private_ips     = ["10.0.10.10"]
+
+    # FIXME
+    # private_ips     = ["10.0.10.10"]
+
     security_groups = [aws_security_group.crossbar_master_node.id]
+
     attachment {
         instance  = aws_instance.crossbar_node_master[0].id
         device_index = 1
@@ -46,15 +50,15 @@ resource "aws_network_interface" "crossbar_node_master_nic1" {
     }
 }
 
-resource "aws_eip" "crossbar_master" {
-    count = var.enable-master ? 1 : 0
+# resource "aws_eip" "crossbar_master" {
+#     count = var.enable-master ? 1 : 0
 
-    instance = aws_instance.crossbar_node_master[0].id
-    vpc      = true
+#     instance = aws_instance.crossbar_node_master[0].id
+#     vpc      = true
 
-    tags = {
-        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
-        node = "master"
-        env = var.env
-    }
-}
+#     tags = {
+#         Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
+#         node = "master"
+#         env = var.env
+#     }
+# }
