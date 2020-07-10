@@ -11,9 +11,10 @@ resource "aws_launch_configuration" "crossbar_cluster_launchconfig" {
         aws_security_group.crossbar_cluster_node.id
     ]
 
-    user_data = templatefile("${path.module}/files/setup-edge.sh", {
+    user_data = templatefile("${path.module}/files/setup-cluster.sh", {
             file_system_id = aws_efs_file_system.crossbar_efs.id,
             access_point_id_nodes = aws_efs_access_point.crossbar_efs_nodes.id
+            access_point_id_web = aws_efs_access_point.crossbar_efs_web.id
             master_url = "ws://${aws_instance.crossbar_node_master[0].private_ip}:${var.master-port}/ws"
             master_hostname = aws_instance.crossbar_node_master[0].private_ip
             master_port = var.master-port
@@ -44,17 +45,17 @@ resource "aws_autoscaling_group" "crossbar_cluster_autoscaling" {
 
     tag {
         key                 = "Name"
-        value               = "Crossbar.io FX (Edge)"
+        value               = "Crossbar.io FX (Custer)"
         propagate_at_launch = true
     }
     tag {
         key                 = "node"
-        value               = "edge"
+        value               = "cluster"
         propagate_at_launch = true
     }
     tag {
         key                 = "env"
-        value               = "prod"
+        value               = var.env
         propagate_at_launch = true
     }
 }

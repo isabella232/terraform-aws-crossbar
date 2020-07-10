@@ -21,6 +21,10 @@ cd ..
 
 /usr/bin/docker pull crossbario/crossbarfx:pypy-slim-amd64
 
+mkdir -p /web
+echo "${file_system_id} /web efs _netdev,tls,accesspoint=${access_point_id_web},ro,auto 0 0" >> /etc/fstab
+mount -a /web
+
 mkdir -p /nodes
 echo "${file_system_id} /nodes efs _netdev,tls,accesspoint=${access_point_id_nodes},rw,auto 0 0" >> /etc/fstab
 mount -a /nodes
@@ -94,15 +98,15 @@ node_config="$(cat <<EOF
                     "paths": {
                         "/": {
                             "type": "static",
-                            "directory": "../web",
+                            "directory": "/web",
                             "options": {
-                                "enable_directory_listing": false
+                                "enable_directory_listing": true
                             }
                         },
                         "info": {
                             "type": "nodeinfo"
                         },
-                        "shared": {
+                        "autobahn": {
                             "type": "archive",
                             "archive": "autobahn-v20.2.1.zip",
                             "origin": "https://github.com/crossbario/autobahn-js-browser/archive/v20.2.1.zip",
@@ -183,6 +187,7 @@ TimeoutStartSec=0
 Restart=always
 ExecStart=/usr/bin/unbuffer /usr/bin/docker run --rm --name crossbarfx --net=host -t \
     --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \
+    -v /web:/web:ro \
     -v /nodes/$HOSTNAME:/nodes/$HOSTNAME:rw \
     crossbario/crossbarfx:pypy-slim-amd64 \
     edge start --cbdir=/nodes/$HOSTNAME/.crossbar

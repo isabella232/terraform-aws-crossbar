@@ -6,7 +6,6 @@ resource "aws_instance" "crossbar_node_master" {
 
     ami = var.aws-amis[var.aws-region]
     instance_type = var.master-instance-type
-    # master_url = "ws://${self.private_ip}:9000/ws"
 
     subnet_id = aws_subnet.crossbar_vpc_master.id
     vpc_security_group_ids = [
@@ -18,14 +17,14 @@ resource "aws_instance" "crossbar_node_master" {
     tags = {
         Name = "Crossbar.io FX (Master)"
         node = "master"
-        env = "prod"
+        env = var.env
     }
 
     user_data = templatefile("${path.module}/files/setup-master.sh", {
             file_system_id = aws_efs_file_system.crossbar_efs.id,
             access_point_id_master = aws_efs_access_point.crossbar_efs_master.id
             access_point_id_nodes = aws_efs_access_point.crossbar_efs_nodes.id
-            master_port = 9000
+            master_port = var.master-port
     })
 }
 

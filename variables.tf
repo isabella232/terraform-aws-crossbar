@@ -1,5 +1,11 @@
 # Copyright (c) Crossbar.io Technologies GmbH. Licensed under GPL 3.0.
 
+variable "env" {
+    type = string
+    default = "default"
+    description = "The environment this cloud is setup for, and for which to mark resource with."
+}
+
 variable "aws-region" {
     type = string
     default = "eu-central-1"

@@ -65,3 +65,20 @@ resource "aws_efs_access_point" "crossbar_efs_nodes" {
         uid = 1000
     }
 }
+
+# https://www.terraform.io/docs/providers/aws/r/efs_access_point.html
+resource "aws_efs_access_point" "crossbar_efs_web" {
+    file_system_id = aws_efs_file_system.crossbar_efs.id
+    root_directory {
+        path = "/web"
+        creation_info {
+            owner_gid   = 1000
+            owner_uid   = 1000
+            permissions = "700"
+        }
+    }
+    posix_user {
+        gid = 1000
+        uid = 1000
+    }
+}

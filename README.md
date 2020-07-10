@@ -126,7 +126,6 @@ Before you can start automated deployment of your new Crossbar.io FX Cloud, you 
 in AWS Route53 and configure your domain to use the AWS nameservers specific to the zone.
 
 In your web browser, sign in to the AWS Management Console.
-
 From the Services menu, navigate to Route 53. In the Route 53 dashboard, switch to the view of your Hosted Zones.
 
 ![shot12c](docs/shot12c.png)
@@ -135,7 +134,7 @@ Add a new hosted zone for the domain name you want to configure:
 
 ![shot12b](docs/shot12b.png)
 
-And note the Zone ID and AWS DNS nameservers (the four IP addresses in the NS record of the zone):
+And note the Zone ID and AWS DNS nameservers (the four hostnames in the NS record of the zone):
 
 ![shot13](docs/shot13.png)
 
@@ -170,7 +169,7 @@ dig @8.8.8.8 +short NS yourdomain.xyz
 
 ### Initialize repository
 
-Create and clone a new GitHub repository for your cloud. Now create a single file **main.tf** with this contents:
+Create and clone a new GitHub repository for your *Crossbar.io FX Cloud* configuration. Create a single file **main.tf** (in the root of this repository) with this contents:
 
 ```terraform
 module "crossbar" {
@@ -189,7 +188,9 @@ module "crossbar" {
 }
 ```
 
-Initialize Terraform:
+Adjust the AWS region desired, and the file path to your public SSH key. Replace `yourdomain.xyz` with your desired (sub-)domain name.
+
+Then, initialize Terraform:
 
 ```console
 terraform init
@@ -202,6 +203,8 @@ Now import the AWS zone **YOURDOMAIN-XYZ-ZONE-ID** you previously created (manua
 ```console
 terraform import module.crossbar.aws_route53_zone.crossbar-zone YOURDOMAIN-XYZ-ZONE-ID
 ```
+
+**IMPORTANT: make sure to _first_ import the (manually created) zone to Terraform, before running `terraform apply`. Otherwise a new zone will be created with new nameservers - which you wouldn't have configured at your registrar yet (and consequently DNS verification records for e.g. TLS certificate validation will fail as your domain doesn't resolve to the correct zone)**
 
 ### Deploy cloud setup
 
