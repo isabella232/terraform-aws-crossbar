@@ -7,6 +7,17 @@ The module is [open-source](LICENSE), based on the [Terraform Provider for AWS](
 [published](https://registry.terraform.io/modules/crossbario/crossbarfx)
 to the [Terraform Registry](https://registry.terraform.io/).
 
+## Quicknotes
+
+### URLs
+
+1. [https://idma2020.de/](https://idma2020.de/)
+1. [https://web.idma2020.de/](https://web.idma2020.de/)
+1. [http://master.idma2020.de:9000/](http://master.idma2020.de:9000/)
+1. [https://data.idma2020.de/](https://data.idma2020.de/)
+1. [http://crossbar-nlb-617ab2c4306439b6.elb.eu-central-1.amazonaws.com/](http://crossbar-nlb-617ab2c4306439b6.elb.eu-central-1.amazonaws.com/)
+1. [http://ec2-3-121-227-127.eu-central-1.compute.amazonaws.com:8080/](http://ec2-3-121-227-127.eu-central-1.compute.amazonaws.com:8080/)
+
 ## Introduction
 
 Crossbar.io FX Cloud is a complete cloud setup with a Crossbar.io FX cluster which provides:

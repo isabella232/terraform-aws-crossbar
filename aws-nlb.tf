@@ -9,7 +9,8 @@ resource "aws_lb" "crossbar-nlb" {
     subnets = [
         aws_subnet.crossbar_vpc_public1.id,
         aws_subnet.crossbar_vpc_public2.id,
-        aws_subnet.crossbar_vpc_public3.id]
+        aws_subnet.crossbar_vpc_public3.id
+    ]
 
     # FIXME: InvalidConfigurationRequest: Security groups are not supported for load balancers with type 'network'
     # security_groups = [
@@ -25,7 +26,7 @@ resource "aws_lb" "crossbar-nlb" {
 # https://www.terraform.io/docs/providers/aws/r/lb_target_group.html
 resource "aws_lb_target_group" "crossbar-nlb-target-group" {
     name        = "crossbar-nlb-target-group"
-    port        = 80
+    port        = 8080
     protocol    = "TCP"
     vpc_id      = aws_vpc.crossbar_vpc.id
 
@@ -51,7 +52,26 @@ resource "aws_lb_listener" "crossbar-nlb-listener" {
         type             = "forward"
         target_group_arn = aws_lb_target_group.crossbar-nlb-target-group.arn
     }
+
+    depends_on = [aws_lb_target_group.crossbar-nlb-target-group]
 }
+
+# resource "aws_lb_listener" "crossbar-nlb-listener" {
+#     load_balancer_arn = aws_lb.crossbar-nlb.arn
+#     port              = "80"
+#     protocol          = "HTTP"
+#     default_action {
+#         type = "redirect"
+#         redirect {
+#             port        = "443"
+#             protocol    = "HTTPS"
+#             status_code = "HTTP_301"
+#         }
+#     }
+
+#     depends_on = [aws_lb_target_group.crossbar-nlb-target-group]
+# }
+
 
 resource "aws_lb_listener" "crossbar-nlb-listener-tls" {
     load_balancer_arn = aws_lb.crossbar-nlb.arn
@@ -63,4 +83,17 @@ resource "aws_lb_listener" "crossbar-nlb-listener-tls" {
         type             = "forward"
         target_group_arn = aws_lb_target_group.crossbar-nlb-target-group.arn
     }
+
+    depends_on = [aws_lb_target_group.crossbar-nlb-target-group]
+}
+
+# resource "aws_lb_target_group_attachment" "crossbar-nlb-target-group-attachment" {
+#     target_group_arn = aws_lb_target_group.crossbar-nlb-target-group.arn
+#     target_id        = aws_autoscaling_group.crossbar_cluster_autoscaling.id
+#     port             = 8080
+# }
+
+resource "aws_autoscaling_attachment" "crossbar-nlb-autoscaling-attachment" {
+    alb_target_group_arn   = aws_lb_target_group.crossbar-nlb-target-group.arn
+    autoscaling_group_name = aws_autoscaling_group.crossbar_cluster_autoscaling.id
 }

@@ -33,7 +33,7 @@ resource "aws_launch_configuration" "crossbar_cluster_launchconfig" {
 
 # https://www.terraform.io/docs/providers/aws/r/autoscaling_group.html
 resource "aws_autoscaling_group" "crossbar_cluster_autoscaling" {
-    name                      = "crossbar_cluster_autoscaling"
+    name                      = "crossbar-cluster-${var.dns-domain-name}"
     launch_configuration      = aws_launch_configuration.crossbar_cluster_launchconfig.name
 
     vpc_zone_identifier       = [
@@ -79,7 +79,7 @@ resource "aws_autoscaling_group" "crossbar_cluster_autoscaling" {
 
 # https://www.terraform.io/docs/providers/aws/r/autoscaling_policy.html
 resource "aws_autoscaling_policy" "crossbar_cluster_cpu_policy" {
-    name                   = "crossbar_cluster_cpu_policy"
+    name                   = "crossbar-cluster-cpu-policy-${var.dns-domain-name}"
     autoscaling_group_name = aws_autoscaling_group.crossbar_cluster_autoscaling.name
     adjustment_type        = "ChangeInCapacity"
     scaling_adjustment     = "1"
@@ -89,8 +89,8 @@ resource "aws_autoscaling_policy" "crossbar_cluster_cpu_policy" {
 
 # https://www.terraform.io/docs/providers/aws/r/cloudwatch_metric_alarm.html
 resource "aws_cloudwatch_metric_alarm" "crossbar_cluster_cpu_alarm" {
-    alarm_name          = "crossbar_cluster_cpu-alarm"
-    alarm_description   = "crossbar_cluster_cpu-alarm"
+    alarm_name          = "crossbar-cluster-cpu-alarm-${var.dns-domain-name}"
+    alarm_description   = "CPU (scale-up) alarm for cluster of domain '${var.dns-domain-name}' fired"
     comparison_operator = "GreaterThanOrEqualToThreshold"
     evaluation_periods  = "2"
     metric_name         = "CPUUtilization"
@@ -119,7 +119,7 @@ resource "aws_cloudwatch_metric_alarm" "crossbar_cluster_cpu_alarm" {
 
 # https://www.terraform.io/docs/providers/aws/r/autoscaling_policy.html
 resource "aws_autoscaling_policy" "crossbar_cluster_cpu_policy_scaledown" {
-    name                   = "crossbar_cluster_cpu_olicy_scaledown"
+    name                   = "crossbar-cluster-cpu-policy-scaledown-${var.dns-domain-name}"
     autoscaling_group_name = aws_autoscaling_group.crossbar_cluster_autoscaling.name
     adjustment_type        = "ChangeInCapacity"
     scaling_adjustment     = "-1"
@@ -129,15 +129,15 @@ resource "aws_autoscaling_policy" "crossbar_cluster_cpu_policy_scaledown" {
 
 # https://www.terraform.io/docs/providers/aws/r/cloudwatch_metric_alarm.html
 resource "aws_cloudwatch_metric_alarm" "crossbar_cluster_cpu_alarm_scaledown" {
-    alarm_name          = "crossbar_cluster_cpu_alarm_scaledown"
-    alarm_description   = "crossbar_cluster_cpu_alarm_scaledown"
+    alarm_name          = "crossbar-cluster-cpu-alarm-scaledown-${var.dns-domain-name}"
+    alarm_description   = "CPU scale-down alarm for cluster of domain '${var.dns-domain-name}' fired"
     comparison_operator = "LessThanOrEqualToThreshold"
     evaluation_periods  = "2"
     metric_name         = "CPUUtilization"
     namespace           = "AWS/EC2"
     period              = "120"
     statistic           = "Average"
-    threshold           = "10"
+    threshold           = "20"
 
     dimensions = {
         "AutoScalingGroupName" = aws_autoscaling_group.crossbar_cluster_autoscaling.name
