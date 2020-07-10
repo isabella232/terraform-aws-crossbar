@@ -65,6 +65,20 @@ resource "aws_s3_bucket_public_access_block" "public-access-crossbar-web" {
     restrict_public_buckets = false
 }
 
+# https://www.terraform.io/docs/providers/aws/r/s3_bucket_object.html
+# resource "aws_s3_bucket_object" "crossbar-web-index-file" {
+#     bucket = aws_s3_bucket.crossbar-web.id
+#     acl    = "public-read"
+#     key    = "index.html"
+
+#     # source = "files/index.html"
+#     content = templatefile("${path.module}/files/index.html", {
+#         file_system_id = aws_efs_file_system.crossbar_efs.id,
+#         dns_domain_name = var.dns-domain-name
+#     })
+# }
+
+
 
 #
 # weblog
