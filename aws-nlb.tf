@@ -17,7 +17,8 @@ resource "aws_lb" "crossbar-nlb" {
     # ]
 
     tags = {
-        Name = "crossbar-nlb"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -36,7 +37,8 @@ resource "aws_lb_target_group" "crossbar-nlb-target-group" {
     }
 
     tags = {
-        Name = "crossbar-nlb-target-group"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 

@@ -3,6 +3,11 @@
 # https://www.terraform.io/docs/providers/aws/r/route53_zone.html
 resource "aws_route53_zone" "crossbar-zone" {
     name = var.dns-domain-name
+
+    tags = {
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
+    }
 }
 
 # https://www.terraform.io/docs/providers/aws/r/route53_record.html

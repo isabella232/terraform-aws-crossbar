@@ -18,8 +18,10 @@ resource "aws_vpc" "crossbar_vpc" {
     enable_dns_support   = "true"
     enable_dns_hostnames = "true"
     enable_classiclink   = "false"
+
     tags = {
-        Name = "crossbar_vpc"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -32,7 +34,8 @@ resource "aws_subnet" "crossbar_vpc_master" {
     availability_zone                   = var.aws-azs[var.aws-region][0]
 
     tags = {
-        Name = "crossbar_vpc_master"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -43,7 +46,8 @@ resource "aws_subnet" "crossbar_vpc_efs1" {
     availability_zone       = var.aws-azs[var.aws-region][0]
 
     tags = {
-        Name = "crossbar_vpc_efs1"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -54,7 +58,8 @@ resource "aws_subnet" "crossbar_vpc_efs2" {
     availability_zone       = var.aws-azs[var.aws-region][1]
 
     tags = {
-        Name = "crossbar_vpc_efs2"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -65,7 +70,8 @@ resource "aws_subnet" "crossbar_vpc_efs3" {
     availability_zone       = var.aws-azs[var.aws-region][2]
 
     tags = {
-        Name = "crossbar_vpc_efs3"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -76,7 +82,8 @@ resource "aws_subnet" "crossbar_vpc_public1" {
     availability_zone                   = var.aws-azs[var.aws-region][0]
 
     tags = {
-        Name = "crossbar_vpc_public1"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -87,7 +94,8 @@ resource "aws_subnet" "crossbar_vpc_public2" {
     availability_zone                   = var.aws-azs[var.aws-region][1]
 
     tags = {
-        Name = "crossbar_vpc_public2"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -98,7 +106,8 @@ resource "aws_subnet" "crossbar_vpc_public3" {
     availability_zone                   = var.aws-azs[var.aws-region][2]
 
     tags = {
-        Name = "crossbar_vpc_public3"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -109,7 +118,8 @@ resource "aws_subnet" "crossbar_vpc_router1" {
     availability_zone       = var.aws-azs[var.aws-region][0]
 
     tags = {
-        Name = "crossbar_vpc_router1"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -120,7 +130,8 @@ resource "aws_subnet" "crossbar_vpc_router2" {
     availability_zone       = var.aws-azs[var.aws-region][1]
 
     tags = {
-        Name = "crossbar_vpc_router2"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -131,7 +142,8 @@ resource "aws_subnet" "crossbar_vpc_router3" {
     availability_zone       = var.aws-azs[var.aws-region][2]
 
     tags = {
-        Name = "crossbar_vpc_router3"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -141,7 +153,8 @@ resource "aws_internet_gateway" "crossbar_vpc_gw" {
     vpc_id = aws_vpc.crossbar_vpc.id
 
     tags = {
-        Name = "crossbar_vpc_gw"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -155,7 +168,8 @@ resource "aws_route_table" "crossbar_vpc_rtb" {
     }
 
     tags = {
-        Name = "crossbar_vpc_rtb"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 

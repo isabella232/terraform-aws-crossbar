@@ -60,4 +60,9 @@ resource "aws_cloudfront_distribution" "crossbar-web" {
     }
 
     depends_on = [aws_s3_bucket.crossbar-web, aws_s3_bucket.crossbar-weblog]
+
+    tags = {
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
+    }
 }

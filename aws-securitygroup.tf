@@ -5,6 +5,7 @@ resource "aws_security_group" "crossbar_cluster_node" {
     vpc_id      = aws_vpc.crossbar_vpc.id
     name        = "crossbar_cluster_node"
     description = "security group for edge nodes"
+
     egress {
         from_port   = 0
         to_port     = 0
@@ -29,8 +30,10 @@ resource "aws_security_group" "crossbar_cluster_node" {
         protocol        = "tcp"
         security_groups = [aws_security_group.crossbar_elb.id]
     }
+
     tags = {
-        Name = "crossbar_cluster_node"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -39,6 +42,7 @@ resource "aws_security_group" "crossbar_master_node" {
     vpc_id      = aws_vpc.crossbar_vpc.id
     name        = "crossbar_master_node"
     description = "security group for master nodes"
+
     egress {
         from_port   = 0
         to_port     = 0
@@ -57,8 +61,10 @@ resource "aws_security_group" "crossbar_master_node" {
         protocol        = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
+
     tags = {
-        Name = "crossbar_master_node"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -67,6 +73,7 @@ resource "aws_security_group" "crossbar_elb" {
     vpc_id      = aws_vpc.crossbar_vpc.id
     name        = "crossbar_elb"
     description = "security group for load balancer"
+
     egress {
         from_port   = 0
         to_port     = 0
@@ -85,8 +92,10 @@ resource "aws_security_group" "crossbar_elb" {
         protocol    = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
+
     tags = {
-        Name = "crossbar_elb"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -110,7 +119,9 @@ resource "aws_security_group" "crossbar_efs" {
         to_port = 0
         protocol = "-1"
     }
+
     tags = {
-        Name = "crossbar_efs"
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }

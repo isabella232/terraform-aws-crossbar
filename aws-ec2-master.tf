@@ -15,7 +15,7 @@ resource "aws_instance" "crossbar_node_master" {
     key_name = aws_key_pair.crossbar_keypair.key_name
 
     tags = {
-        Name = "Crossbar.io FX (Master)"
+        Name = "Crossbar.io Cloud Master [${var.dns-domain-name}]"
         node = "master"
         env = var.env
     }
@@ -38,6 +38,12 @@ resource "aws_network_interface" "crossbar_node_master_nic1" {
         instance  = aws_instance.crossbar_node_master[0].id
         device_index = 1
     }
+
+    tags = {
+        Name = "Crossbar.io Cloud Master [${var.dns-domain-name}]"
+        node = "master"
+        env = var.env
+    }
 }
 
 resource "aws_eip" "crossbar_master" {
@@ -45,4 +51,10 @@ resource "aws_eip" "crossbar_master" {
 
     instance = aws_instance.crossbar_node_master[0].id
     vpc      = true
+
+    tags = {
+        Name = "Crossbar.io Cloud Master [${var.dns-domain-name}]"
+        node = "master"
+        env = var.env
+    }
 }

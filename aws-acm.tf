@@ -30,6 +30,15 @@ resource "aws_acm_certificate" "crossbar_dns_cert1" {
     subject_alternative_names = [
         "www.${var.dns-domain-name}"
     ]
+
+    lifecycle {
+        create_before_destroy = true
+    }
+
+    tags = {
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
+    }
 }
 
 # verification record for cert CN
@@ -94,6 +103,15 @@ resource "aws_acm_certificate" "crossbar_dns_cert2" {
     subject_alternative_names = [
         "*.data.${var.dns-domain-name}"
     ]
+
+    lifecycle {
+        create_before_destroy = true
+    }
+
+    tags = {
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
+    }
 }
 
 # verification record for cert CN
@@ -139,6 +157,10 @@ resource "aws_acm_certificate" "crossbar_dns_cert3" {
 
     # the certs CN:
     domain_name       = "master.${var.dns-domain-name}"
+
+    lifecycle {
+        create_before_destroy = true
+    }
 }
 
 # verification record for cert CN

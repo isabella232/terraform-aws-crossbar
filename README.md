@@ -126,21 +126,25 @@ Before you can start automated deployment of your new Crossbar.io FX Cloud, you 
 in AWS Route53 and configure your domain to use the AWS nameservers specific to the zone.
 
 In your web browser, sign in to the AWS Management Console.
-From the Services menu, navigate to Route 53. In the Route 53 dashboard, switch to the view of your Hosted Zones.
+From the Services menu, navigate to Route 53 dashboard:
 
 ![shot12c](docs/shot12c.png)
+
+Go to the view of your Hosted Zones:
+
+![shot12d](docs/shot12d.png)
 
 Add a new hosted zone for the domain name you want to configure:
 
 ![shot12b](docs/shot12b.png)
 
-And note the Zone ID and AWS DNS nameservers (the four hostnames in the NS record of the zone):
+Note the Zone ID (eg `Z2ABCDABCDABCD`) and AWS DNS nameservers (the four hostnames in the NS record of the zone):
 
 ![shot13](docs/shot13.png)
 
 ### Configure DNS Domain
 
-Register the AWS name servers for your Route 53 zone with the registrar of your domain name.
+Before continuing, register the AWS name servers for your Route 53 zone with the registrar of your domain name.
 
 When a new Hosted Zone is created, Route 53 automatically generates the obligatory SOA entry as well as an NS record with four name servers supplied by AWS, e.g.
 
@@ -161,20 +165,29 @@ Once that has happened (which may take several minutes to half an hour), resolvi
 
 To [test nameservers using dig](https://support.rackspace.com/how-to/using-dig-to-query-nameservers/):
 
+#### Test domain nameservers
+
+To test to which nameservers your domain resolves to (here, using `8.8.8.8` (Google) as DNS provider for the resolution):
+
 ```console
 dig @8.8.8.8 +short NS yourdomain.xyz
 ```
 
 **IMPORTANT: You must wait before continuing until you can verify the correct nameservers. This can take several minutes or even an hour or longer after you modified nameservers at your registrar for DNS to replicate.**
 
+> Instead of `8.8.8.8`, you also can first test using one of the four AWS nameservers for your
+zone. All four nameservers should be returned immediately after creating the zone. Other nameservers will only return the same list once the DNS information has been propagated.
+
 ### Initialize repository
 
-Create and clone a new GitHub repository for your *Crossbar.io FX Cloud* configuration. Create a single file **main.tf** (in the root of this repository) with this contents:
+All configuration for your *Crossbar.io FX Cloud* is done from a dedicated GitHub repository used for this cloud setup.
+
+Create and clone a new GitHub repository, and create a single file **main.tf** (in the root of this repository) with this contents:
 
 ```terraform
 module "crossbar" {
     source  = "crossbario/crossbar/aws"
-    version = "1.5.1"
+    version = "1.5.2"
 
     aws-region = "eu-central-1"
     admin-pubkey = "ssh-key.pub"
@@ -239,6 +252,8 @@ terraform {
   }
 }
 ```
+
+Also see the documentation [here](https://www.terraform.io/docs/cloud/migrate/index.html) on how to migrate from local to cloud hosted Terraform state.
 
 ## Packer
 

@@ -9,7 +9,7 @@ variable "env" {
 variable "aws-region" {
     type = string
     default = "eu-central-1"
-    description = "The AWS region into which to deploy Crossbar.io FX cloud."
+    description = "The AWS region into which to deploy Crossbar.io Cloud."
 }
 
 variable "aws-amis" {
@@ -19,7 +19,7 @@ variable "aws-amis" {
         eu-central-1 = "ami-0d37f3544e1bb229a"
         eu-west-1 = "ami-0ec39498df467f85c"
     }
-    description = "Map of Crossbar.io FX cloud AMIs to be used by region"
+    description = "Map of Crossbar.io Cloud AMIs to be used by region"
 }
 
 variable "aws-azs" {
@@ -77,19 +77,19 @@ variable "enable-tls" {
 variable "enable-master" {
     type = string
     default = true
-    description = "If enabled (default), create a Crossbar.io FX master node, auto-pairing all cluster nodes to the (auto-created) default management realm."
+    description = "If enabled (default), create a Crossbar.io Cloud master node, auto-pairing all cluster nodes to the (auto-created) default management realm."
 }
 
 variable "enable-workbench" {
     type = string
     default = false
-    description = "If enabled, create a Crossbar.io FX workbench node, with all cluster node directories in (read-only) access."
+    description = "If enabled, create a Crossbar.io Cloud workbench node, with all cluster node directories in (read-only) access."
 }
 
 variable "enable-xbrmarket" {
     type = string
     default = false
-    description = "If enabled, create a Crossbar.io FX XBR market node, hosting a XBR data market. A market operator may also use the workbench to access and analyze market (transactional) data."
+    description = "If enabled, create a Crossbar.io Cloud XBR market node, hosting a XBR data market. A market operator may also use the workbench to access and analyze market (transactional) data."
 }
 
 variable "master-instance-type" {

@@ -14,6 +14,9 @@ default:
 	@echo "  ping_nodes   Ping all nodes in auto-scaling group (will SSH into the instances)."
 	@echo ""
 
+fix:
+	find . -name "*.tf" -exec sed -i'' 's/Crossbar.io FX/Crossbar.io Cloud/g' {} \;
+
 build:
 	packer build ./crossbarfx-ami.json
 

@@ -44,8 +44,9 @@ resource "aws_s3_bucket" "crossbar-web" {
         target_prefix = "web/"
     }
 
-    tags    = {
-        Name = "crossbar-web"
+    tags = {
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -72,8 +73,9 @@ resource "aws_s3_bucket" "crossbar-weblog" {
     bucket  = var.domain-weblog-bucket
     force_destroy = true
     acl     = "log-delivery-write"
-    tags    = {
-        Name = "crossbar-weblog"
+    tags = {
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
 
@@ -84,7 +86,8 @@ resource "aws_s3_bucket" "crossbar-weblog" {
 resource "aws_s3_bucket" "crossbar-backup" {
     bucket  = var.domain-backup-bucket
     acl     = "private"
-    tags    = {
-        Name = "crossbar-backup"
+    tags = {
+        Name = "Crossbar.io Cloud [${var.dns-domain-name}]"
+        env = var.env
     }
 }
