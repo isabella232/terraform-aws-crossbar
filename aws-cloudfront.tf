@@ -10,14 +10,14 @@ resource "aws_cloudfront_distribution" "crossbar-web" {
         }
     }
 
-    comment                 = var.dns-domain-name
+    comment                 = var.domain-name
     enabled                 = true
     is_ipv6_enabled         = true
     default_root_object     = "index.html"
 
-    aliases                 = [var.dns-domain-name, "www.${var.dns-domain-name}"]
+    aliases                 = [var.domain-name, "www.${var.domain-name}"]
     # error creating CloudFront Distribution: InvalidViewerCertificate: The certificate that is attached to your distribution doesn't cover the alternate domain name (CNAME) that you're trying to add. For more details, see: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/CNAMEs.html#alternate-domain-names-requirements
-    # aliases                 = [aws_s3_bucket.crossbar-web.bucket, var.dns-domain-name, "www.${var.dns-domain-name}"]
+    # aliases                 = [aws_s3_bucket.crossbar-web.bucket, var.domain-name, "www.${var.domain-name}"]
 
     logging_config {
         include_cookies = false
@@ -62,7 +62,7 @@ resource "aws_cloudfront_distribution" "crossbar-web" {
     depends_on = [aws_s3_bucket.crossbar-web, aws_s3_bucket.crossbar-weblog]
 
     tags = {
-        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
+        Name = "Crossbar.io Cloud - ${var.domain-name}"
         env = var.env
     }
 }

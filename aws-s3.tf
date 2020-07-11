@@ -31,7 +31,7 @@ data "aws_iam_policy_document" "read-crossbar-web-bucket" {
 
 # https://www.terraform.io/docs/providers/aws/r/s3_bucket.html
 resource "aws_s3_bucket" "crossbar-web" {
-    bucket = var.domain-web-bucket
+    bucket = var.web-bucket
     force_destroy = true
     acl    = "public-read"
 
@@ -45,7 +45,7 @@ resource "aws_s3_bucket" "crossbar-web" {
     }
 
     tags = {
-        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
+        Name = "Crossbar.io Cloud - ${var.domain-name}"
         env = var.env
     }
 }
@@ -73,8 +73,8 @@ resource "aws_s3_bucket_public_access_block" "public-access-crossbar-web" {
 
 #     # source = "files/index.html"
 #     content = templatefile("${path.module}/files/index.html", {
-#         file_system_id = aws_efs_file_system.crossbar_efs.id,
-#         dns_domain_name = var.dns-domain-name
+#         file_system_id = aws_efs_file_system.crossbar-efs1.id,
+#         dns_domain_name = var.domain-name
 #     })
 # }
 
@@ -84,11 +84,11 @@ resource "aws_s3_bucket_public_access_block" "public-access-crossbar-web" {
 # weblog
 #
 resource "aws_s3_bucket" "crossbar-weblog" {
-    bucket  = var.domain-weblog-bucket
+    bucket  = var.weblog-bucket
     force_destroy = true
     acl     = "log-delivery-write"
     tags = {
-        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
+        Name = "Crossbar.io Cloud - ${var.domain-name}"
         env = var.env
     }
 }
@@ -98,10 +98,10 @@ resource "aws_s3_bucket" "crossbar-weblog" {
 # backup
 #
 resource "aws_s3_bucket" "crossbar-backup" {
-    bucket  = var.domain-backup-bucket
+    bucket  = var.backup-bucket
     acl     = "private"
     tags = {
-        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
+        Name = "Crossbar.io Cloud - ${var.domain-name}"
         env = var.env
     }
 }

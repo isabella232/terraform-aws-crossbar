@@ -1,9 +1,9 @@
 # Copyright (c) Crossbar.io Technologies GmbH. Licensed under GPL 3.0.
 
 # https://www.terraform.io/docs/providers/aws/r/security_group.html
-resource "aws_security_group" "crossbar_cluster_node" {
-    vpc_id      = aws_vpc.crossbar_vpc.id
-    name        = "crossbar_cluster_node"
+resource "aws_security_group" "crossbar-cluster" {
+    vpc_id      = aws_vpc.crossbar-vpc1.id
+    name        = "crossbar-cluster"
     description = "security group for edge nodes"
 
     egress {
@@ -25,20 +25,20 @@ resource "aws_security_group" "crossbar_cluster_node" {
 
         # FIXME: we might restrict traffic incoming into the nodes to
         # the LB as source (maybe even via subnet configuration)
-        # security_groups = [aws_security_group.crossbar_elb.id]
+        # security_groups = [aws_security_group.crossbar-nlb1.id]
         cidr_blocks = ["0.0.0.0/0"]
     }
 
     tags = {
-        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
+        Name = "Crossbar.io Cloud - ${var.domain-name}"
         env = var.env
     }
 }
 
 # https://www.terraform.io/docs/providers/aws/r/security_group.html
-resource "aws_security_group" "crossbar_master_node" {
-    vpc_id      = aws_vpc.crossbar_vpc.id
-    name        = "crossbar_master_node"
+resource "aws_security_group" "crossbar-master" {
+    vpc_id      = aws_vpc.crossbar-vpc1.id
+    name        = "crossbar-master"
     description = "security group for master nodes"
 
     egress {
@@ -61,15 +61,15 @@ resource "aws_security_group" "crossbar_master_node" {
     }
 
     tags = {
-        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
+        Name = "Crossbar.io Cloud - ${var.domain-name}"
         env = var.env
     }
 }
 
 # https://www.terraform.io/docs/providers/aws/r/security_group.html
-resource "aws_security_group" "crossbar_elb" {
-    vpc_id      = aws_vpc.crossbar_vpc.id
-    name        = "crossbar_elb"
+resource "aws_security_group" "crossbar-nlb1" {
+    vpc_id      = aws_vpc.crossbar-vpc1.id
+    name        = "crossbar-nlb1"
     description = "security group for load balancer"
 
     egress {
@@ -92,15 +92,15 @@ resource "aws_security_group" "crossbar_elb" {
     }
 
     tags = {
-        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
+        Name = "Crossbar.io Cloud - ${var.domain-name}"
         env = var.env
     }
 }
 
 # https://www.terraform.io/docs/providers/aws/r/security_group.html
-resource "aws_security_group" "crossbar_efs" {
-    name = "crossbar_efs"
-    vpc_id = aws_vpc.crossbar_vpc.id
+resource "aws_security_group" "crossbar-efs1" {
+    name = "crossbar-efs1"
+    vpc_id = aws_vpc.crossbar-vpc1.id
 
     // NFS
     ingress {
@@ -119,7 +119,7 @@ resource "aws_security_group" "crossbar_efs" {
     }
 
     tags = {
-        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
+        Name = "Crossbar.io Cloud - ${var.domain-name}"
         env = var.env
     }
 }

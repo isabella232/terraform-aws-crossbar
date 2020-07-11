@@ -15,7 +15,9 @@ default:
 	@echo ""
 
 fix:
-	find . -name "*.tf" -exec sed -i'' 's/Crossbar\.io Cloud \[\${var\.dns-domain-name}\]/Crossbar\.io Cloud \(\${var\.dns-domain-name}\)/g' {} \;
+	find . -name "*.tf" -exec sed -i'' 's/crossbar_cluster_node/crossbar-cluster/g' {} \;
+	find . -name "*.tf" -exec sed -i'' 's/crossbar_master_node/crossbar-master/g' {} \;
+	find . -name "*.tf" -exec sed -i'' 's/crossbar_elb/crossbar-nlb1/g' {} \;
 
 build:
 	packer build ./crossbarfx-ami.json

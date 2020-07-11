@@ -43,27 +43,27 @@ variable "admin-pubkey" {
     description = "Path to file with the SSH public key to install in the instances by default for SSH administration access."
 }
 
-variable "dns-domain-name" {
+variable "domain-name" {
     type = string
     description = "The DNS domain name used in the cloud deployment, eg. example.com or my-cloud.example.com. You must own and control this (sub-)domain, as in, be able to configure the AWS nameservers to be used for the domain."
 }
 
-variable "domain-web-bucket" {
+variable "web-bucket" {
     type = string
     description = "Name of the S3 bucket used to host the static web content of the domain web site(s)."
 }
 
-variable "domain-weblog-bucket" {
+variable "weblog-bucket" {
     type = string
     description = "Name of the S3 bucket used to store web access logs for the domain web site(s)."
 }
 
-variable "domain-download-bucket" {
+variable "download-bucket" {
     type = string
     description = "Name of the S3 bucket used to host the downloadable content on the domain web site(s)."
 }
 
-variable "domain-backup-bucket" {
+variable "backup-bucket" {
     type = string
     description = "Name of the S3 bucket used to host the snapshots and backups for the domain nodes."
 }

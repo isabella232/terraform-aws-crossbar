@@ -2,10 +2,10 @@
 
 # https://www.terraform.io/docs/providers/aws/r/route53_zone.html
 resource "aws_route53_zone" "crossbar-zone" {
-    name = var.dns-domain-name
+    name = var.domain-name
 
     tags = {
-        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
+        Name = "Crossbar.io Cloud - ${var.domain-name}"
         env = var.env
     }
 }
@@ -13,7 +13,7 @@ resource "aws_route53_zone" "crossbar-zone" {
 # https://www.terraform.io/docs/providers/aws/r/route53_record.html
 resource "aws_route53_record" "crossbar-nameserver" {
     zone_id         = aws_route53_zone.crossbar-zone.zone_id
-    name            = var.dns-domain-name
+    name            = var.domain-name
     type            = "NS"
 
     allow_overwrite = true
@@ -29,12 +29,12 @@ resource "aws_route53_record" "crossbar-nameserver" {
 # https://www.terraform.io/docs/providers/aws/r/route53_record.html
 resource "aws_route53_record" "crossbar-data" {
     zone_id = aws_route53_zone.crossbar-zone.zone_id
-    name    = "data.${var.dns-domain-name}"
+    name    = "data.${var.domain-name}"
     type    = "A"
 
     alias {
-        name                   = aws_lb.crossbar-nlb.dns_name
-        zone_id                = aws_lb.crossbar-nlb.zone_id
+        name                   = aws_lb.crossbar-nlb1.dns_name
+        zone_id                = aws_lb.crossbar-nlb1.zone_id
         evaluate_target_health = true
     }
 }
@@ -42,7 +42,7 @@ resource "aws_route53_record" "crossbar-data" {
 resource "aws_route53_record" "crossbar-master" {
     count = var.enable-master ? 1 : 0
     zone_id = aws_route53_zone.crossbar-zone.zone_id
-    name    = "master.${var.dns-domain-name}"
+    name    = "master.${var.domain-name}"
     type    = "A"
 
     ttl     = 30
@@ -53,7 +53,7 @@ resource "aws_route53_record" "crossbar-master" {
 # create a Route53 ALIAS record to the Cloudfront distribution
 resource "aws_route53_record" "crossbar-web-alias" {
   zone_id = aws_route53_zone.crossbar-zone.zone_id
-  name    = var.dns-domain-name
+  name    = var.domain-name
   type    = "A"
 
   alias {
@@ -66,7 +66,7 @@ resource "aws_route53_record" "crossbar-web-alias" {
 # create a Route53 CNAME record to the Cloudfront distribution
 resource "aws_route53_record" "crossbar-web-cname" {
   zone_id = aws_route53_zone.crossbar-zone.zone_id
-  name    = "www.${var.dns-domain-name}"
+  name    = "www.${var.domain-name}"
   type    = "CNAME"
 
   ttl     = 300

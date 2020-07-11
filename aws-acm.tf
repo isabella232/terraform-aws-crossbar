@@ -1,8 +1,8 @@
 # Copyright (c) Crossbar.io Technologies GmbH. Licensed under GPL 3.0.
 
 #
-# - <dns-domain-name>
-# - www.<dns-domain-name>
+# - <domain-name>
+# - www.<domain-name>
 #
 
 # Important: needed because certificate for cloudfront must be in us-east-1
@@ -21,14 +21,14 @@ resource "aws_acm_certificate" "crossbar_dns_cert1" {
     validation_method = "DNS"
 
     # the certs CN:
-    domain_name       = var.dns-domain-name
+    domain_name       = var.domain-name
 
     # the certs SANs:
     #
     # IMPORTANT: only use 1 SAN currently, as there is an open issue when using _multipe_ SANs:
     # https://github.com/terraform-providers/terraform-provider-aws/issues/8531
     subject_alternative_names = [
-        "www.${var.dns-domain-name}"
+        "www.${var.domain-name}"
     ]
 
     lifecycle {
@@ -36,7 +36,7 @@ resource "aws_acm_certificate" "crossbar_dns_cert1" {
     }
 
     tags = {
-        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
+        Name = "Crossbar.io Cloud - ${var.domain-name}"
         env = var.env
     }
 }
@@ -84,8 +84,8 @@ resource "aws_acm_certificate_validation" "crossbar_dns_cert1_validation" {
 
 
 #
-# - data.<dns-domain-name>
-# - *.data.<dns-domain-name>
+# - data.<domain-name>
+# - *.data.<domain-name>
 #
 
 # TLS certificate for domain, managed (auto-refreshed) by AWS
@@ -94,14 +94,14 @@ resource "aws_acm_certificate" "crossbar_dns_cert2" {
     validation_method = "DNS"
 
     # the certs CN:
-    domain_name       = "data.${var.dns-domain-name}"
+    domain_name       = "data.${var.domain-name}"
 
     # the certs SANs:
     #
     # IMPORTANT: only use 1 SAN currently, as there is an open issue when using _multipe_ SANs:
     # https://github.com/terraform-providers/terraform-provider-aws/issues/8531
     # subject_alternative_names = [
-    #     "*.data.${var.dns-domain-name}"
+    #     "*.data.${var.domain-name}"
     # ]
 
     lifecycle {
@@ -109,7 +109,7 @@ resource "aws_acm_certificate" "crossbar_dns_cert2" {
     }
 
     tags = {
-        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
+        Name = "Crossbar.io Cloud - ${var.domain-name}"
         env = var.env
     }
 }
@@ -147,7 +147,7 @@ resource "aws_acm_certificate_validation" "crossbar_dns_cert2_validation" {
 
 
 #
-# - master.<dns-domain-name>
+# - master.<domain-name>
 #
 
 # TLS certificate for domain, managed (auto-refreshed) by AWS
@@ -156,7 +156,7 @@ resource "aws_acm_certificate" "crossbar_dns_cert3" {
     validation_method = "DNS"
 
     # the certs CN:
-    domain_name       = "master.${var.dns-domain-name}"
+    domain_name       = "master.${var.domain-name}"
 
     lifecycle {
         create_before_destroy = true

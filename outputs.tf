@@ -3,7 +3,7 @@
 # https://www.terraform.io/docs/modules/#standard-module-structure
 
 output "crossbar_dns_name" {
-    value = aws_lb.crossbar-nlb.dns_name
+    value = aws_lb.crossbar-nlb1.dns_name
     description = "Public DNS name of main cluster endpoint (load-balancers pointing to Crossbar.io FX cluster nodes)."
 }
 

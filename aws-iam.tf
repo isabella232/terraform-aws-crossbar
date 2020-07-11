@@ -29,7 +29,7 @@ resource "aws_iam_role" "crossbar-ec2iam-master" {
 EOF
 
     tags = {
-        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
+        Name = "Crossbar.io Cloud - ${var.domain-name}"
         env = var.env
     }
 }
@@ -96,7 +96,7 @@ resource "aws_iam_role" "crossbar-ec2iam-cluster" {
 EOF
 
     tags = {
-        Name = "Crossbar.io Cloud - ${var.dns-domain-name}"
+        Name = "Crossbar.io Cloud - ${var.domain-name}"
         env = var.env
     }
 }
