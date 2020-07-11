@@ -95,6 +95,8 @@ web-url = https://idma2020.de
 
 ![shot25](docs/shot25.png)
 
+![shot26](docs/shot26.png)
+
 ### Prerequisites
 
 You will need the following to create a *Crossbar.io FX Cloud*:
