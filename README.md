@@ -357,6 +357,15 @@ before recreating the cloud:
 terraform apply
 ```
 
+## Testing
+
+* [x] [Python](https://github.com/crossbario/cookiecutter-autobahn-python)
+* [x] [JavaScript](https://github.com/crossbario/cookiecutter-autobahn-js)
+* [ ] [Java](https://github.com/crossbario/cookiecutter-autobahn-java)
+* [ ] [C++](https://github.com/crossbario/cookiecutter-autobahn-cpp)
+* [ ] [Go](https://github.com/crossbario/cookiecutter-nexus-go)
+* [ ] [C#](https://github.com/crossbario/cookiecutter-wampsharp)
+
 ## Upload Web content
 
 To publish new or modified content to your Web site, upload the respective files to the web bucket that was
