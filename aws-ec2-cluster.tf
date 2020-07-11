@@ -14,21 +14,27 @@ resource "aws_launch_configuration" "crossbar-cluster1-lc" {
     iam_instance_profile = aws_iam_instance_profile.crossbar-ec2profile-cluster.name
 
     user_data = templatefile("${path.module}/files/setup-cluster.sh", {
-            file_system_id = aws_efs_file_system.crossbar-efs1.id,
-            access_point_id_nodes = aws_efs_access_point.crossbar-efs1-nodes.id
-            access_point_id_web = aws_efs_access_point.crossbar-efs1_web.id
-            master_url = "ws://${aws_instance.crossbar_node_master[0].private_ip}:${var.master-port}/ws"
-            master_hostname = aws_instance.crossbar_node_master[0].private_ip
-            master_port = var.master-port
-            aws_region = var.aws-region
-            aws_account_id = data.aws_caller_identity.current.account_id
+        file_system_id = aws_efs_file_system.crossbar-efs1.id,
+        access_point_id_nodes = aws_efs_access_point.crossbar-efs1-nodes.id
+        access_point_id_web = aws_efs_access_point.crossbar-efs1_web.id
+
+        #master_url = "ws://${aws_instance.crossbar_node_master.private_ip}:${var.master-port}/ws"
+        #master_hostname = aws_instance.crossbar_node_master.private_ip
+        master_url = "ws://localhost:9000/ws"
+        master_hostname = "127.0.0.1"
+
+        master_port = var.master-port
+        aws_region = var.aws-region
+        aws_account_id = data.aws_caller_identity.current.account_id
     })
 
     # https://github.com/hashicorp/terraform/issues/532
     # https://www.terraform.io/docs/configuration/resources.html#lifecycle-lifecycle-customizations
     lifecycle {
-        create_before_destroy = true
+        create_before_destroy = false
     }
+
+    depends_on = [aws_instance.crossbar_node_master]
 }
 
 # https://www.terraform.io/docs/providers/aws/r/autoscaling_group.html

@@ -2,8 +2,6 @@
 
 # https://www.terraform.io/docs/providers/aws/r/instance.html
 resource "aws_instance" "crossbar_node_master" {
-    count = var.enable-master ? 1 : 0
-
     ami = var.aws-amis[var.aws-region]
     instance_type = var.master-instance-type
 
@@ -55,9 +53,7 @@ resource "aws_instance" "crossbar_node_master" {
 # }
 
 resource "aws_eip" "crossbar_master" {
-    count = var.enable-master ? 1 : 0
-
-    instance = aws_instance.crossbar_node_master[0].id
+    instance = aws_instance.crossbar_node_master.id
     vpc      = true
 
     tags = {

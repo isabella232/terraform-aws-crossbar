@@ -40,14 +40,13 @@ resource "aws_route53_record" "crossbar-data" {
 }
 
 resource "aws_route53_record" "crossbar-master" {
-    count = var.enable-master ? 1 : 0
     zone_id = aws_route53_zone.crossbar-zone.zone_id
     name    = "master.${var.domain-name}"
     type    = "A"
 
     ttl     = 30
     # records = [aws_instance.crossbar_node_master[0].public_ip]
-    records = [aws_eip.crossbar_master[0].public_ip]
+    records = [aws_eip.crossbar_master.public_ip]
 }
 
 # create a Route53 ALIAS record to the Cloudfront distribution

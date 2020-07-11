@@ -15,9 +15,24 @@ default:
 	@echo ""
 
 fix:
-	find . -name "*.tf" -exec sed -i'' 's/crossbar_cluster_node/crossbar-cluster/g' {} \;
-	find . -name "*.tf" -exec sed -i'' 's/crossbar_master_node/crossbar-master/g' {} \;
-	find . -name "*.tf" -exec sed -i'' 's/crossbar_elb/crossbar-nlb1/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/aws_caller_identity/crossbar-caller-identity/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/aws_iam_policy_document/crossbar-iam-policy-doc1/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/crossbar_dns_cert1/crossbar-tls-cert1/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/crossbar_dns_cert2/crossbar-tls-cert2/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/crossbar_dns_cert3/crossbar-tls-cert3/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/crossbar_dns_cert1_validation/crossbar-tls-cert1-validation/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/crossbar_dns_cert2_validation/crossbar-tls-cert2-validation/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/crossbar_dns_cert3_validation/crossbar-tls-cert3-validation/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/crossbar-cluster1-cpu-up-policy_scaledown/crossbar-cluster1-cpu-up-policy/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/crossbar-cluster1-cpu-up-alarm_scaledown/crossbar-cluster1-cpu-up-alarm/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/crossbar_node_master/crossbar-master-node/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/crossbar_keypair/crossbar-admin-keypair/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/crossbar_dns_cert1_validation_alt1_rec/crossbar-tls-cert1-validation-alt1/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/crossbar_dns_cert1_validation_cn_rec/crossbar-tls-cert1-validation-cn/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/crossbar_dns_cert2_validation_cn_rec/crossbar-tls-cert2-validation-cn/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/crossbar_dns_cert3_validation_cn_rec/crossbar-tls-cert3-validation-cn/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/read-crossbar-web/crossbar-web-read/g' {} \;
+	find . -name *.tf -exec sed -i'' 's/public-access-crossbar-web/crossbar-web-public/g' {} \;
 
 build:
 	packer build ./crossbarfx-ami.json

@@ -44,34 +44,17 @@ resource "aws_lb_target_group" "crossbar-nlb1-targets" {
 }
 
 # https://www.terraform.io/docs/providers/aws/r/lb_listener.html
-# resource "aws_lb_listener" "crossbar-nlb1-listener1" {
-#     load_balancer_arn = aws_lb.crossbar-nlb1.arn
-#     port              = "80"
-#     protocol          = "TCP"
-#     default_action {
-#         type             = "forward"
-#         target_group_arn = aws_lb_target_group.crossbar-nlb-target-group.arn
-#     }
-
-#     depends_on = [aws_lb_target_group.crossbar-nlb1-targets]
-# }
-
 resource "aws_lb_listener" "crossbar-nlb1-listener1" {
     load_balancer_arn = aws_lb.crossbar-nlb1.arn
     port              = "80"
-    protocol          = "HTTP"
+    protocol          = "TCP"
     default_action {
-        type = "redirect"
-        redirect {
-            port        = "443"
-            protocol    = "HTTPS"
-            status_code = "HTTP_301"
-        }
+        type             = "forward"
+        target_group_arn = aws_lb_target_group.crossbar-nlb1-targets.arn
     }
 
     depends_on = [aws_lb_target_group.crossbar-nlb1-targets]
 }
-
 
 resource "aws_lb_listener" "crossbar-nlb1-listener2" {
     load_balancer_arn = aws_lb.crossbar-nlb1.arn
@@ -87,12 +70,7 @@ resource "aws_lb_listener" "crossbar-nlb1-listener2" {
     depends_on = [aws_lb_target_group.crossbar-nlb1-targets]
 }
 
-# resource "aws_lb_target_group_attachment" "crossbar-nlb-target-group-attachment" {
-#     target_group_arn = aws_lb_target_group.crossbar-nlb-target-group.arn
-#     target_id        = aws_autoscaling_group.crossbar-cluster1-asg.id
-#     port             = 8080
-# }
-
+# https://www.terraform.io/docs/providers/aws/r/autoscaling_attachment.html
 resource "aws_autoscaling_attachment" "crossbar-nlb1-asc-attachment1" {
     alb_target_group_arn   = aws_lb_target_group.crossbar-nlb1-targets.arn
     autoscaling_group_name = aws_autoscaling_group.crossbar-cluster1-asg.id
