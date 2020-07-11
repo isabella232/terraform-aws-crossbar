@@ -96,9 +96,14 @@ resource "aws_s3_bucket_object" "crossbar-web-index-file" {
 
     # source = "files/index.html"
     content = templatefile("${path.module}/files/index.html", {
-        file_system_id = aws_efs_file_system.crossbar-efs1.id,
+        bucket_name = var.web-bucket,
+        bucket_arn = aws_s3_bucket.crossbar-web.arn,
         dns_domain_name = var.domain-name
     })
+
+    content_type = "text/html"
+
+    depends_on = [aws_efs_file_system.crossbar-efs1]
 }
 
 

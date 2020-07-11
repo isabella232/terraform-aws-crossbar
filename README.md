@@ -361,7 +361,7 @@ To publish new or modified content to your Web site, upload the respective files
 created when initializing:
 
 ```console
-aws s3api put-object --acl public-read --bucket example.com-web \
+aws s3api put-object --acl public-read --content-type "text/html" --bucket example.com-web \
   --key index.html --body ./files/index.html
 ```
 

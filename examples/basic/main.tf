@@ -1,12 +1,12 @@
 module "crossbar" {
     source  = "crossbario/crossbar/aws"
-    version = "1.6.3"
+    version = "1.7.0"
 
     # where to deploy to
-    aws-region = "eu-central-1"
+    aws-region = var.region
 
     # path to file with public SSH key
-    admin-pubkey = "ssh-key.pub"
+    admin-pubkey = var.pubkey
 
     # domain name hosted by the cloud
     domain-name = "example.com"
@@ -16,21 +16,4 @@ module "crossbar" {
     weblog-bucket = "example.com-weblog"
     download-bucket = "example.com-download"
     backup-bucket = "example.com-backup"
-}
-
-
-output "web-url" {
-    value = module.crossbar.web-url
-}
-
-output "application-url" {
-    value = module.crossbar.application-url
-}
-
-output "management-url" {
-    value = module.crossbar.management-url
-}
-
-output "master-node" {
-    value = module.crossbar.crossbar_master_public_dns
 }
