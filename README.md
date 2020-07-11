@@ -355,6 +355,18 @@ before recreating the cloud:
 terraform apply
 ```
 
+## Upload Web content
+
+To publish new or modified content to your Web site, upload the respective files to the web bucket that was
+created when initializing:
+
+```console
+aws s3api put-object --acl public-read --bucket example.com-web \
+  --key index.html --body ./files/index.html
+```
+
+AWS Cloudfront should pick up the change (eventually) and propagate the new data to all Cloudfront edge locations (PoPs). The content is then live.
+
 ## Packer
 
 The Terraform based setup on AWS is based on AMIs which come with Docker and Crossbar.io FX preinstalled.

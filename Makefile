@@ -15,7 +15,7 @@ default:
 	@echo ""
 
 fix:
-	find . -name '*.tf' -exec sed -i'' 's/crossbar-iam-policy-doc1/aws_caller_identity/g' {} \;
+	find . -name '*.tf' -exec sed -i'' 's/crossbar-web-read-bucket/crossbar-web-bucket-access/g' {} \;
 
 build:
 	packer build ./crossbarfx-ami.json
