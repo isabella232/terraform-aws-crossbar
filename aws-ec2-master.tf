@@ -18,6 +18,7 @@ resource "aws_instance" "crossbar-master-node" {
         Name = "Crossbar.io Cloud - ${var.domain-name}"
         node = "master"
         env = var.env
+        pubkey = "unknown"
     }
 
     user_data = templatefile("${path.module}/files/setup-master.sh", {
@@ -28,6 +29,18 @@ resource "aws_instance" "crossbar-master-node" {
             aws_region = var.aws-region
             aws_account_id = data.aws_caller_identity.current.account_id
     })
+
+    depends_on = [
+        aws_efs_access_point.crossbar-efs1-master,
+        aws_efs_access_point.crossbar-efs1-nodes
+    ]
+
+    lifecycle {
+        # https://www.terraform.io/docs/configuration/resources.html#ignore_changes
+        ignore_changes = [
+            tags
+        ]
+    }
 }
 
 # resource "aws_network_interface" "crossbar-master-node_nic1" {

@@ -20,8 +20,6 @@ resource "aws_launch_configuration" "crossbar-cluster1-lc" {
 
         master_url = "ws://${aws_instance.crossbar-master-node.private_ip}:${var.master-port}/ws"
         master_hostname = aws_instance.crossbar-master-node.private_ip
-        #master_url = "ws://localhost:9000/ws"
-        #master_hostname = "127.0.0.1"
 
         master_port = var.master-port
         aws_region = var.aws-region
@@ -34,7 +32,11 @@ resource "aws_launch_configuration" "crossbar-cluster1-lc" {
         create_before_destroy = true
     }
 
-    depends_on = [aws_instance.crossbar-master-node]
+    depends_on = [
+          aws_instance.crossbar-master-node
+        , aws_efs_file_system.crossbar-efs1
+    ]
+
 }
 
 # https://www.terraform.io/docs/providers/aws/r/autoscaling_group.html
@@ -47,10 +49,6 @@ resource "aws_autoscaling_group" "crossbar-cluster1-asg" {
         aws_subnet.crossbar-vpc1-public2.id,
         aws_subnet.crossbar-vpc1-public3.id
     ]
-    # load_balancers            = [
-    #     aws_lb.crossbar-nlb.name
-    # ]
-    # target_group_arns = []
 
     min_size                  = var.dataplane-min-size
     max_size                  = var.dataplane-max-size
@@ -79,6 +77,11 @@ resource "aws_autoscaling_group" "crossbar-cluster1-asg" {
     # https://www.terraform.io/docs/configuration/resources.html#lifecycle-lifecycle-customizations
     lifecycle {
         create_before_destroy = true
+
+        # https://www.terraform.io/docs/configuration/resources.html#ignore_changes
+        ignore_changes = [
+            tags
+        ]
     }
 
     depends_on = [

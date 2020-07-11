@@ -72,9 +72,28 @@ The following describes how to create a new *Crossbar.io FX Cloud* to host a dom
 1. Prerequisites
 2. Create AWS Zone
 3. Configure DNS Domain
-4. Initialize repository
-5. Import AWS Zone
-6. Deploy cloud setup
+4. Create Git repository
+5. Initialize Terraform and import AWS Zone
+6. Deploy cloud setup to AWS
+
+Steps 1.-5. are manual, while step 6. is fully automated using a single command:
+
+```console
+$ terraform apply
+
+...
+
+Apply complete! Resources: 76 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+application-url = wss://data.idma2020.de/ws
+management-url = ws://master.idma2020.de:9000/ws
+master-node = master.idma2020.de
+web-url = https://idma2020.de
+```
+
+![shot25](docs/shot25.png)
 
 ### Prerequisites
 
@@ -304,7 +323,7 @@ terraform {
 
 Also see the documentation [here](https://www.terraform.io/docs/cloud/migrate/index.html) on how to migrate from local to cloud hosted Terraform state.
 
-### Destroy cloud setup
+### Destroy or recreate cloud setup
 
 To destroy _everything_, including the Route 53 zone for your domain, run:
 
@@ -323,6 +342,18 @@ terraform destroy
 ```
 
 > IMPORTANT: do not run "terraform plan" or "terraform apply" in between above two commands!
+
+If you want to recreate everything (after having destroyed everything, _but_ the AWS Route 53 zone), import the zone first:
+
+```console
+terraform import module.crossbar.aws_route53_zone.crossbar-zone YOURDOMAIN-XYZ-ZONE-ID
+```
+
+before recreating the cloud:
+
+```console
+terraform apply
+```
 
 ## Packer
 
