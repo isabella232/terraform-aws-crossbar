@@ -304,6 +304,26 @@ terraform {
 
 Also see the documentation [here](https://www.terraform.io/docs/cloud/migrate/index.html) on how to migrate from local to cloud hosted Terraform state.
 
+### Destroy cloud setup
+
+To destroy _everything_, including the Route 53 zone for your domain, run:
+
+```console
+terraform destroy
+```
+
+> WARNING: destroying and recreating a Route 53 zone for your domain will require modification (via your registrar)
+and propagation of DNS nameserver records for your domain. This can be painful or at least take some time (for DNS replication and caching reasons).
+
+To destroy everything _but_ the Route 53 zone for your domain, you can use [this trick](https://stackoverflow.com/a/55271805/884770):
+
+```console
+terraform state rm module.crossbar.aws_route53_zone.crossbar-zone
+terraform destroy
+```
+
+> IMPORTANT: do not run "terraform plan" or "terraform apply" in between above two commands!
+
 ## Packer
 
 The Terraform based setup on AWS is based on AMIs which come with Docker and Crossbar.io FX preinstalled.
