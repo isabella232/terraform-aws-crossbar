@@ -1,6 +1,6 @@
 module "crossbar" {
     source  = "crossbario/crossbar/aws"
-    version = "1.7.0"
+    version = "1.7.1"
 
     # where to deploy to
     aws-region = var.region
