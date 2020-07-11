@@ -7,18 +7,7 @@ The module is [open-source](LICENSE), based on the [Terraform Provider for AWS](
 [published](https://registry.terraform.io/modules/crossbario/crossbarfx)
 to the [Terraform Registry](https://registry.terraform.io/).
 
-## Quicknotes
-
-### URLs
-
-1. [https://idma2020.de/](https://idma2020.de/)
-1. [https://web.idma2020.de/](https://web.idma2020.de/)
-1. [http://master.idma2020.de:9000/](http://master.idma2020.de:9000/)
-1. [https://data.idma2020.de/](https://data.idma2020.de/)
-1. [http://crossbar-nlb-617ab2c4306439b6.elb.eu-central-1.amazonaws.com/](http://crossbar-nlb-617ab2c4306439b6.elb.eu-central-1.amazonaws.com/)
-1. [http://ec2-3-121-227-127.eu-central-1.compute.amazonaws.com:8080/](http://ec2-3-121-227-127.eu-central-1.compute.amazonaws.com:8080/)
-
-## Introduction
+## How it works
 
 Crossbar.io FX Cloud is a complete cloud setup with a Crossbar.io FX cluster which provides:
 
@@ -39,6 +28,42 @@ an auto-scaling enabled Crossbar.io FX cluster in AWS:
 * an AWS Auto-scaling group of AWS EC2 instances for the CrossbarFX edge/core nodes
 
 The cluster auto-scaling group will have an initial size of two, which together with the master node results in a **total of three AWS EC2 instances started** by default. The edge/core nodes will be automatically paired with the (default) management realm.
+
+### Here is what you get
+
+The whole Crossbar.io FX Cloud is deployed into an AWS region of choice, and everything (most) is setup within a dedicated VPC newly created.
+
+Static Web content for the cloud will be accessible at
+
+* [https://example.com/](https://example.com/)
+* [https://web.example.com/](https://web.example.com/)
+
+The contents is served from AWS Cloudfront, a CDN more than a hundred PoPs globally. The CDN content is seeded from
+a S3 bucket, so publishing the web site amounts to uploading new content to the S3 bucket. The Web content will be
+super-scaled and DDoS protected. Web access logs are automatically stored in a dedicated S3 bucket.
+
+The AWS Cloudfront TLS settings are hardened, and TLS certificates for Cloudfront are managed and automatically refreshed using AWS ACM.
+
+The master node can be accessed at
+
+* [http://master.example.com:9000/](http://master.example.com:9000/)
+
+> TODO: move master to TLS(-only) and manage via ACM
+
+The routing cluster can be accessed at
+
+* [https://data.example.com/](https://data.example.com/)
+
+This is resolved using AWS Route 53 to a AWS network load balancer in the region the cloud is deployed to
+
+* [http://crossbar-nlb-617ab2c4306439b6.elb.eu-central-1.amazonaws.com/](http://crossbar-nlb-617ab2c4306439b6.elb.eu-central-1.amazonaws.com/)
+
+The AWS NLB has a load-balancer node in every availability zone within the respective region. The load-balancer nodes in turn
+forward TCP traffic (at OSI layer 4, and cross-(availability-)zones) to one of the (healthy) cluster nodes
+
+* [http://ec2-3-121-227-127.eu-central-1.compute.amazonaws.com:8080/](http://ec2-3-121-227-127.eu-central-1.compute.amazonaws.com:8080/)
+
+The AWS NLB TLS settings are hardened, and TLS certificates for the NLB are managed and automatically refreshed using AWS ACM.
 
 ## How to use
 
@@ -246,6 +271,18 @@ If you have an account at [Terraform Cloud](https://app.terraform.io), you can a
 (as an alternative to the pure CLI approach described above) create a new workspace
 and deploy from there:
 
+```console
+...
+Apply complete! Resources: 0 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+application-url = wss://data.example.com/ws
+management-url = ws://master.example.com:9000/ws
+master-node = master.example.com
+web-url = https://example.com
+```
+
 ![shot15](docs/shot15.png)
 
 #### Use the CLI together with Terraform Cloud
@@ -343,3 +380,15 @@ eu-central-1: ami-06ca2353bcdf3ac29
 (cpy382_1) oberstet@intel-nuci7:~/scm/crossbario/crossbario-devops/terraform$
 ```
 
+
+## Notes
+
+### Handling "Conflicting conditional operation" errors
+
+Should you run into an error similar to
+
+> Error: Error putting S3 policy: OperationAborted: A conflicting conditional operation is currently in progress against this resource. Please try again.
+
+just try again - and again;) Ultimately this is related to eventual consistency of certain AWS resources.
+
+Also see [here](https://stackoverflow.com/questions/13898057/aws-error-message-a-conflicting-conditional-operation-is-currently-in-progress#16553056).

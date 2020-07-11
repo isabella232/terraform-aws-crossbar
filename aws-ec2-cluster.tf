@@ -6,7 +6,7 @@ resource "aws_launch_configuration" "crossbar-cluster1-lc" {
     image_id        = var.aws-amis[var.aws-region]
     instance_type   = var.dataplane-instance-type
 
-    key_name        = aws_key_pair.crossbar_keypair.key_name
+    key_name        = aws_key_pair.crossbar-admin-keypair.key_name
     security_groups = [
         aws_security_group.crossbar-cluster.id
     ]
@@ -18,10 +18,10 @@ resource "aws_launch_configuration" "crossbar-cluster1-lc" {
         access_point_id_nodes = aws_efs_access_point.crossbar-efs1-nodes.id
         access_point_id_web = aws_efs_access_point.crossbar-efs1_web.id
 
-        #master_url = "ws://${aws_instance.crossbar_node_master.private_ip}:${var.master-port}/ws"
-        #master_hostname = aws_instance.crossbar_node_master.private_ip
-        master_url = "ws://localhost:9000/ws"
-        master_hostname = "127.0.0.1"
+        master_url = "ws://${aws_instance.crossbar-master-node.private_ip}:${var.master-port}/ws"
+        master_hostname = aws_instance.crossbar-master-node.private_ip
+        #master_url = "ws://localhost:9000/ws"
+        #master_hostname = "127.0.0.1"
 
         master_port = var.master-port
         aws_region = var.aws-region
@@ -31,10 +31,10 @@ resource "aws_launch_configuration" "crossbar-cluster1-lc" {
     # https://github.com/hashicorp/terraform/issues/532
     # https://www.terraform.io/docs/configuration/resources.html#lifecycle-lifecycle-customizations
     lifecycle {
-        create_before_destroy = false
+        create_before_destroy = true
     }
 
-    depends_on = [aws_instance.crossbar_node_master]
+    depends_on = [aws_instance.crossbar-master-node]
 }
 
 # https://www.terraform.io/docs/providers/aws/r/autoscaling_group.html
@@ -77,10 +77,14 @@ resource "aws_autoscaling_group" "crossbar-cluster1-asg" {
 
     # https://github.com/hashicorp/terraform/issues/532
     # https://www.terraform.io/docs/configuration/resources.html#lifecycle-lifecycle-customizations
-    depends_on = [aws_launch_configuration.crossbar-cluster1-lc]
     lifecycle {
         create_before_destroy = true
     }
+
+    depends_on = [
+        aws_launch_configuration.crossbar-cluster1-lc,
+        aws_instance.crossbar-master-node
+    ]
 }
 
 # https://www.terraform.io/docs/providers/aws/r/autoscaling_policy.html
@@ -91,6 +95,8 @@ resource "aws_autoscaling_policy" "crossbar-cluster1-cpu-up-policy" {
     scaling_adjustment     = "1"
     cooldown               = "300"
     policy_type            = "SimpleScaling"
+
+    depends_on = [aws_autoscaling_group.crossbar-cluster1-asg]
 }
 
 # https://www.terraform.io/docs/providers/aws/r/cloudwatch_metric_alarm.html
@@ -117,6 +123,8 @@ resource "aws_cloudwatch_metric_alarm" "crossbar-cluster1-cpu-up-alarm" {
         node = "cluster"
         env = var.env
     }
+
+    depends_on = [aws_autoscaling_group.crossbar-cluster1-asg]
 }
 
 #
@@ -124,18 +132,20 @@ resource "aws_cloudwatch_metric_alarm" "crossbar-cluster1-cpu-up-alarm" {
 #
 
 # https://www.terraform.io/docs/providers/aws/r/autoscaling_policy.html
-resource "aws_autoscaling_policy" "crossbar-cluster1-cpu-up-policy_scaledown" {
-    name                   = "crossbar-cluster-cpu-policy-scaledown-${var.domain-name}"
+resource "aws_autoscaling_policy" "crossbar-cluster1-cpu-down-policy" {
+    name                   = "crossbar-cluster1-cpu-down-policy-${var.domain-name}"
     autoscaling_group_name = aws_autoscaling_group.crossbar-cluster1-asg.name
     adjustment_type        = "ChangeInCapacity"
     scaling_adjustment     = "-1"
     cooldown               = "300"
     policy_type            = "SimpleScaling"
+
+    depends_on = [aws_autoscaling_group.crossbar-cluster1-asg]
 }
 
 # https://www.terraform.io/docs/providers/aws/r/cloudwatch_metric_alarm.html
-resource "aws_cloudwatch_metric_alarm" "crossbar-cluster1-cpu-up-alarm_scaledown" {
-    alarm_name          = "crossbar-cluster-cpu-alarm-scaledown-${var.domain-name}"
+resource "aws_cloudwatch_metric_alarm" "crossbar-cluster1-cpu-down-alarm" {
+    alarm_name          = "crossbar-cluster1-cpu-down-alarm-${var.domain-name}"
     alarm_description   = "CPU scale-down alarm for cluster of domain '${var.domain-name}' fired"
     comparison_operator = "LessThanOrEqualToThreshold"
     evaluation_periods  = "2"
@@ -150,11 +160,13 @@ resource "aws_cloudwatch_metric_alarm" "crossbar-cluster1-cpu-up-alarm_scaledown
     }
 
     actions_enabled = true
-    alarm_actions   = [aws_autoscaling_policy.crossbar-cluster1-cpu-up-policy_scaledown.arn]
+    alarm_actions   = [aws_autoscaling_policy.crossbar-cluster1-cpu-down-policy.arn]
 
     tags = {
         Name = "Crossbar.io Cloud - ${var.domain-name}"
         node = "cluster"
         env = var.env
     }
+
+    depends_on = [aws_autoscaling_group.crossbar-cluster1-asg]
 }

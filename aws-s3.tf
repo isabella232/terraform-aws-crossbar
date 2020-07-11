@@ -7,7 +7,7 @@ resource "aws_cloudfront_origin_access_identity" "crossbar-web" {
     comment = "crossbar-web"
 }
 
-data "aws_iam_policy_document" "read-crossbar-web-bucket" {
+data "aws_iam_policy_document" "crossbar-web-read-bucket" {
     statement {
         actions   = ["s3:GetObject"]
         resources = ["${aws_s3_bucket.crossbar-web.arn}/*"]
@@ -27,6 +27,12 @@ data "aws_iam_policy_document" "read-crossbar-web-bucket" {
             identifiers = [aws_cloudfront_origin_access_identity.crossbar-web.iam_arn]
         }
     }
+}
+
+resource "aws_s3_bucket_policy" "crossbar-web-read" {
+    bucket = aws_s3_bucket.crossbar-web.id
+
+    policy = data.aws_iam_policy_document.crossbar-web-read-bucket.json
 }
 
 # https://www.terraform.io/docs/providers/aws/r/s3_bucket.html
@@ -50,13 +56,7 @@ resource "aws_s3_bucket" "crossbar-web" {
     }
 }
 
-resource "aws_s3_bucket_policy" "read-crossbar-web" {
-    bucket = aws_s3_bucket.crossbar-web.id
-
-    policy = data.aws_iam_policy_document.read-crossbar-web-bucket.json
-}
-
-resource "aws_s3_bucket_public_access_block" "public-access-crossbar-web" {
+resource "aws_s3_bucket_public_access_block" "crossbar-web-public" {
     bucket = aws_s3_bucket.crossbar-web.id
 
     block_public_acls       = true

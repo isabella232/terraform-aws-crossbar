@@ -46,7 +46,7 @@ resource "aws_cloudfront_distribution" "crossbar-web" {
     }
 
     viewer_certificate {
-        acm_certificate_arn = aws_acm_certificate_validation.crossbar_dns_cert1_validation.certificate_arn
+        acm_certificate_arn = aws_acm_certificate_validation.crossbar-tls-cert1-validation.certificate_arn
         ssl_support_method = "sni-only"
 
         # https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValues-security-policy

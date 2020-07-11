@@ -13,7 +13,7 @@ provider "aws" {
 }
 
 # TLS certificate for domain, managed (auto-refreshed) by AWS
-resource "aws_acm_certificate" "crossbar_dns_cert1" {
+resource "aws_acm_certificate" "crossbar-tls-cert1" {
     # must be in us-east-1 region for use with Cloudfront
     provider = aws.virginia
 
@@ -42,43 +42,43 @@ resource "aws_acm_certificate" "crossbar_dns_cert1" {
 }
 
 # verification record for cert CN
-resource "aws_route53_record" "crossbar_dns_cert1_validation_cn_rec" {
+resource "aws_route53_record" "crossbar-tls-cert1-validation-cn" {
     # must be in us-east-1 region for use with Cloudfront
     provider = aws.virginia
 
 
-    name    = aws_acm_certificate.crossbar_dns_cert1.domain_validation_options.0.resource_record_name
-    type    = aws_acm_certificate.crossbar_dns_cert1.domain_validation_options.0.resource_record_type
+    name    = aws_acm_certificate.crossbar-tls-cert1.domain_validation_options.0.resource_record_name
+    type    = aws_acm_certificate.crossbar-tls-cert1.domain_validation_options.0.resource_record_type
     zone_id = aws_route53_zone.crossbar-zone.zone_id
     records = [
-        aws_acm_certificate.crossbar_dns_cert1.domain_validation_options.0.resource_record_value
+        aws_acm_certificate.crossbar-tls-cert1.domain_validation_options.0.resource_record_value
     ]
     ttl     = 60
 }
 
 # verification record for cert SAN[0]
-resource "aws_route53_record" "crossbar_dns_cert1_validation_alt1_rec" {
+resource "aws_route53_record" "crossbar-tls-cert1-validation-alt1" {
     # must be in us-east-1 region for use with Cloudfront
     provider = aws.virginia
 
-    name    = aws_acm_certificate.crossbar_dns_cert1.domain_validation_options.1.resource_record_name
-    type    = aws_acm_certificate.crossbar_dns_cert1.domain_validation_options.1.resource_record_type
+    name    = aws_acm_certificate.crossbar-tls-cert1.domain_validation_options.1.resource_record_name
+    type    = aws_acm_certificate.crossbar-tls-cert1.domain_validation_options.1.resource_record_type
     zone_id = aws_route53_zone.crossbar-zone.zone_id
     records = [
-        aws_acm_certificate.crossbar_dns_cert1.domain_validation_options.1.resource_record_value
+        aws_acm_certificate.crossbar-tls-cert1.domain_validation_options.1.resource_record_value
     ]
     ttl     = 60
 }
 
 # certificate verification record
-resource "aws_acm_certificate_validation" "crossbar_dns_cert1_validation" {
+resource "aws_acm_certificate_validation" "crossbar-tls-cert1-validation" {
     # must be in us-east-1 region for use with Cloudfront
     provider = aws.virginia
 
-    certificate_arn = aws_acm_certificate.crossbar_dns_cert1.arn
+    certificate_arn = aws_acm_certificate.crossbar-tls-cert1.arn
     validation_record_fqdns = [
-        aws_route53_record.crossbar_dns_cert1_validation_cn_rec.fqdn,
-        aws_route53_record.crossbar_dns_cert1_validation_alt1_rec.fqdn
+        aws_route53_record.crossbar-tls-cert1-validation-cn.fqdn,
+        aws_route53_record.crossbar-tls-cert1-validation-alt1.fqdn
     ]
 }
 
@@ -89,7 +89,7 @@ resource "aws_acm_certificate_validation" "crossbar_dns_cert1_validation" {
 #
 
 # TLS certificate for domain, managed (auto-refreshed) by AWS
-resource "aws_acm_certificate" "crossbar_dns_cert2" {
+resource "aws_acm_certificate" "crossbar-tls-cert2" {
     # verify certificate using DNS records created in Route 53
     validation_method = "DNS"
 
@@ -115,33 +115,33 @@ resource "aws_acm_certificate" "crossbar_dns_cert2" {
 }
 
 # verification record for cert CN
-resource "aws_route53_record" "crossbar_dns_cert2_validation_cn_rec" {
-    name    = aws_acm_certificate.crossbar_dns_cert2.domain_validation_options.0.resource_record_name
-    type    = aws_acm_certificate.crossbar_dns_cert2.domain_validation_options.0.resource_record_type
+resource "aws_route53_record" "crossbar-tls-cert2-validation-cn" {
+    name    = aws_acm_certificate.crossbar-tls-cert2.domain_validation_options.0.resource_record_name
+    type    = aws_acm_certificate.crossbar-tls-cert2.domain_validation_options.0.resource_record_type
     zone_id = aws_route53_zone.crossbar-zone.zone_id
     records = [
-        aws_acm_certificate.crossbar_dns_cert2.domain_validation_options.0.resource_record_value
+        aws_acm_certificate.crossbar-tls-cert2.domain_validation_options.0.resource_record_value
     ]
     ttl     = 60
 }
 
 # verification record for cert SAN[0]
-# resource "aws_route53_record" "crossbar_dns_cert2_validation_alt1_rec" {
-#     name    = aws_acm_certificate.crossbar_dns_cert2.domain_validation_options.1.resource_record_name
-#     type    = aws_acm_certificate.crossbar_dns_cert2.domain_validation_options.1.resource_record_type
+# resource "aws_route53_record" "crossbar-tls-cert2-validation-alt1" {
+#     name    = aws_acm_certificate.crossbar-tls-cert2.domain_validation_options.1.resource_record_name
+#     type    = aws_acm_certificate.crossbar-tls-cert2.domain_validation_options.1.resource_record_type
 #     zone_id = aws_route53_zone.crossbar-zone.zone_id
 #     records = [
-#         aws_acm_certificate.crossbar_dns_cert2.domain_validation_options.1.resource_record_value
+#         aws_acm_certificate.crossbar-tls-cert2.domain_validation_options.1.resource_record_value
 #     ]
 #     ttl     = 60
 # }
 
 # certificate verification record
-resource "aws_acm_certificate_validation" "crossbar_dns_cert2_validation" {
-    certificate_arn = aws_acm_certificate.crossbar_dns_cert2.arn
+resource "aws_acm_certificate_validation" "crossbar-tls-cert2-validation" {
+    certificate_arn = aws_acm_certificate.crossbar-tls-cert2.arn
     validation_record_fqdns = [
-        aws_route53_record.crossbar_dns_cert2_validation_cn_rec.fqdn
-        #, aws_route53_record.crossbar_dns_cert2_validation_alt1_rec.fqdn
+        aws_route53_record.crossbar-tls-cert2-validation-cn.fqdn
+        #, aws_route53_record.crossbar-tls-cert2-validation-alt1.fqdn
     ]
 }
 
@@ -151,7 +151,7 @@ resource "aws_acm_certificate_validation" "crossbar_dns_cert2_validation" {
 #
 
 # TLS certificate for domain, managed (auto-refreshed) by AWS
-resource "aws_acm_certificate" "crossbar_dns_cert3" {
+resource "aws_acm_certificate" "crossbar-tls-cert3" {
     # verify certificate using DNS records created in Route 53
     validation_method = "DNS"
 
@@ -164,20 +164,20 @@ resource "aws_acm_certificate" "crossbar_dns_cert3" {
 }
 
 # verification record for cert CN
-resource "aws_route53_record" "crossbar_dns_cert3_validation_cn_rec" {
-    name    = aws_acm_certificate.crossbar_dns_cert3.domain_validation_options.0.resource_record_name
-    type    = aws_acm_certificate.crossbar_dns_cert3.domain_validation_options.0.resource_record_type
+resource "aws_route53_record" "crossbar-tls-cert3-validation-cn" {
+    name    = aws_acm_certificate.crossbar-tls-cert3.domain_validation_options.0.resource_record_name
+    type    = aws_acm_certificate.crossbar-tls-cert3.domain_validation_options.0.resource_record_type
     zone_id = aws_route53_zone.crossbar-zone.zone_id
     records = [
-        aws_acm_certificate.crossbar_dns_cert3.domain_validation_options.0.resource_record_value
+        aws_acm_certificate.crossbar-tls-cert3.domain_validation_options.0.resource_record_value
     ]
     ttl     = 60
 }
 
 # certificate verification record
-resource "aws_acm_certificate_validation" "crossbar_dns_cert3_validation" {
-    certificate_arn = aws_acm_certificate.crossbar_dns_cert3.arn
+resource "aws_acm_certificate_validation" "crossbar-tls-cert3-validation" {
+    certificate_arn = aws_acm_certificate.crossbar-tls-cert3.arn
     validation_record_fqdns = [
-        aws_route53_record.crossbar_dns_cert3_validation_cn_rec.fqdn
+        aws_route53_record.crossbar-tls-cert3-validation-cn.fqdn
     ]
 }

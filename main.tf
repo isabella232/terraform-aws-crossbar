@@ -13,7 +13,7 @@ provider "aws" {
     region = var.aws-region
 }
 
-resource "aws_key_pair" "crossbar_keypair" {
-    key_name   = "crossbar_keypair"
+resource "aws_key_pair" "crossbar-admin-keypair" {
+    key_name   = "crossbar-admin-keypair"
     public_key = file(var.admin-pubkey)
 }

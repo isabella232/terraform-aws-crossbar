@@ -45,7 +45,7 @@ resource "aws_route53_record" "crossbar-master" {
     type    = "A"
 
     ttl     = 30
-    # records = [aws_instance.crossbar_node_master[0].public_ip]
+    # records = [aws_instance.crossbar-master-node[0].public_ip]
     records = [aws_eip.crossbar_master.public_ip]
 }
 

@@ -1,7 +1,7 @@
 # Copyright (c) Crossbar.io Technologies GmbH. Licensed under GPL 3.0.
 
 # https://www.terraform.io/docs/providers/aws/r/instance.html
-resource "aws_instance" "crossbar_node_master" {
+resource "aws_instance" "crossbar-master-node" {
     ami = var.aws-amis[var.aws-region]
     instance_type = var.master-instance-type
 
@@ -10,7 +10,7 @@ resource "aws_instance" "crossbar_node_master" {
         aws_security_group.crossbar-master.id
     ]
 
-    key_name = aws_key_pair.crossbar_keypair.key_name
+    key_name = aws_key_pair.crossbar-admin-keypair.key_name
 
     iam_instance_profile = aws_iam_instance_profile.crossbar-ec2profile-master.name
 
@@ -30,7 +30,7 @@ resource "aws_instance" "crossbar_node_master" {
     })
 }
 
-# resource "aws_network_interface" "crossbar_node_master_nic1" {
+# resource "aws_network_interface" "crossbar-master-node_nic1" {
 #     count = var.enable-master ? 1 : 0
 
 #     subnet_id       = aws_subnet.crossbar-vpc1-master.id
@@ -41,7 +41,7 @@ resource "aws_instance" "crossbar_node_master" {
 #     security_groups = [aws_security_group.crossbar-master.id]
 
 #     attachment {
-#         instance  = aws_instance.crossbar_node_master[0].id
+#         instance  = aws_instance.crossbar-master-node[0].id
 #         device_index = 1
 #     }
 
@@ -53,7 +53,7 @@ resource "aws_instance" "crossbar_node_master" {
 # }
 
 resource "aws_eip" "crossbar_master" {
-    instance = aws_instance.crossbar_node_master.id
+    instance = aws_instance.crossbar-master-node.id
     vpc      = true
 
     tags = {

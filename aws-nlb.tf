@@ -61,7 +61,7 @@ resource "aws_lb_listener" "crossbar-nlb1-listener2" {
     port              = "443"
     protocol          = "TLS"
     ssl_policy        = "ELBSecurityPolicy-FS-1-2-Res-2019-08"
-    certificate_arn   = aws_acm_certificate_validation.crossbar_dns_cert2_validation.certificate_arn
+    certificate_arn   = aws_acm_certificate_validation.crossbar-tls-cert2-validation.certificate_arn
     default_action {
         type             = "forward"
         target_group_arn = aws_lb_target_group.crossbar-nlb1-targets.arn
