@@ -1,6 +1,6 @@
 {
     "variables": {
-        "crossbarfx_version": "20.7.1.dev6"
+        "crossbarfx_version": "20.7.1.dev8"
     },
     "builders": [
         {

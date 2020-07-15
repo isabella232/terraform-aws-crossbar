@@ -1,3 +1,69 @@
+## Tutorials
+
+```console
+$ cat ~/.crossbarfx/config.ini
+[default]
+url=ws://localhost:9000/ws
+privkey=default.priv
+pubkey=default.pub
+terminal 1:
+$ make clean
+$ make run_master
+terminal 2:
+$ make run_node1
+.. wait a couple of secs before restarting the node ..
+$ make run_node1
+terminal 3:
+$ make run_node2
+.. wait a couple of secs before restarting the node ..
+$ make run_node2
+terminal 4:
+make show_master
+make status_nodes
+crossbarfx shell monitor
+```
+
+
+```console
+crossbarfx shell --realm default list webclusters
+crossbarfx shell --realm default create webcluster cluster1 --config='{}'
+crossbarfx shell --realm default show webcluster cluster1
+
+crossbarfx shell --realm default show node node-a3683925
+crossbarfx shell --realm default show node node-9542bfdd
+
+crossbarfx shell --realm default list webcluster-nodes cluster1
+
+crossbarfx shell --realm default add webcluster-node cluster1 node-a3683925 --config '{"webcluster_oid": "95f30cf5-444f-4c40-8d02-be58c89d5a66"}'
+crossbarfx shell --realm default add webcluster-node cluster1 node-9542bfdd --config '{"webcluster_oid": "95f30cf5-444f-4c40-8d02-be58c89d5a66", "parallel": 8}'
+
+crossbarfx shell --realm default list webcluster-nodes cluster1
+crossbarfx shell --realm default show webcluster-node cluster1 node-9542bfdd
+
+crossbarfx shell --realm default start webcluster cluster1
+```
+
+### Crossbar Cloud Terraform Tutorial
+
+1. Domain registration
+   * http://www.showroomdummy.com/
+   * https://www.united-domains.de/portfolio/
+1. AWS zone creation
+   * https://console.aws.amazon.com/route53/home
+1. DNS configuration
+   * https://www.united-domains.de/portfolio/
+1. Terraform
+   * create and adjust main.tf
+   * run terraform apply
+1. Test
+   * mydomain.xyz
+   * shell
+   * WAMP clients **-> Autobahn Cookiecutter Tutorial**
+
+### Autobahn Cookiecutter Tutorial
+
+Write me.
+
 ## 1 - Start master node
 
 ![autoconfiguration-shot5](docs/autoconfiguration/shot5.png)

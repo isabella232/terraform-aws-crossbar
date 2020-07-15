@@ -16,8 +16,13 @@ variable "aws-amis" {
     type = map(string)
     default = {
         # crossbario/crossbarfx:pypy-slim-amd64-20.7.1.dev6
-        eu-central-1 = "ami-0d37f3544e1bb229a"
-        eu-west-1 = "ami-0ec39498df467f85c"
+        # eu-central-1 = "ami-0d37f3544e1bb229a"
+        # eu-west-1 = "ami-0ec39498df467f85c"
+
+        # crossbario/crossbarfx:pypy-slim-amd64-20.7.1.dev8
+        eu-central-1 = "ami-03c74d07c078364b8"
+        eu-west-1 = "ami-0cbf92e18ded93770"
+
     }
     description = "Map of Crossbar.io Cloud AMIs to be used by region"
 }
